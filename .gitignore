@@ -33,3 +33,4 @@ exports/
 # Éditeurs
 .vscode/
 .idea/
+!.env.example
