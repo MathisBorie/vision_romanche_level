@@ -3,3 +3,6 @@ python-dotenv
 pillow
 matplotlib
 ipykernel
+numpy
+opencv-python
+pandas
