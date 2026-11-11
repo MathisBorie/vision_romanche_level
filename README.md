@@ -72,7 +72,8 @@ des planches d'images.
 ### Le catalogue `data_treatment/catalogue_images.csv`
 
 Une ligne par image. Le CSV est versionné (dans `data_treatment/`, à côté des scripts) pour partager les annotations.
-Relancer `standardisation.py` ou `classification.py` ne touche jamais aux colonnes manuelles.
+Relancer `standardisation.py` ou `classification.py` ne touche jamais aux colonnes manuelles
+(sauf `classification.py`, qui y reporte les fichiers d'annotation de l'étape 5).
 
 | Colonnes | Écrites par | Contenu |
 |---|---|---|
@@ -89,6 +90,7 @@ Relancer `standardisation.py` ou `classification.py` ne touche jamais aux colonn
 | `niveau_px` | **manuel** | y de la frontière eau / berge d'en face (px, image d'origine) |
 | `classe_niveau` | **manuel** | `bas` / `moyen` / `haut` / `crue` (étape suivante) |
 | `verifie` | **manuel** | 1 = ligne vérifiée par un humain : `periode`, `visibilite`, `reflets`, `exploitable` ne sont plus recalculés |
+| `annotateur` | classification (depuis les fichiers d'annotation) | qui a annoté le niveau |
 | `commentaire` | **manuel** | texte libre |
 
 Bilan au 7 novembre : 3 901 images `oui`, 511 `douteux`, 1 115 `non` (nuits).
@@ -100,25 +102,33 @@ Un niveau en pixels ne se compare donc d'une image à l'autre qu'après correcti
 
 ### 5. Annoter le niveau à la main : `define_water_lvl.py`
 
+Les jours sont répartis entre les trois annotateurs (jour de l'année modulo 3, environ 1 450 images chacun,
+sur toute la saison) : personne n'annote deux fois la même image. Chacun lance le script avec son nom :
+
 ```bash
-.venv/bin/python data_treatment/define_water_lvl.py                  # images oui + douteux, ordre chronologique
-.venv/bin/python data_treatment/define_water_lvl.py --jour 2026-09   # seulement septembre
+.venv/bin/python data_treatment/define_water_lvl.py aymen                  # ou mathis, tristan
+.venv/bin/python data_treatment/define_water_lvl.py aymen --jour 2026-09   # seulement septembre
+.venv/bin/python data_treatment/define_water_lvl.py aymen --revoir         # inclut ses images déjà annotées
 ```
 
-Un clic place une ligne rouge sur la frontière eau / berge d'en face (y moyen sur la largeur, comme dans le
-notebook 04) ; chaque validation est enregistrée tout de suite dans `catalogue_images.csv`.
+**Un clic enregistre** le niveau à la hauteur cliquée (frontière eau / berge d'en face, y moyen sur la largeur,
+comme dans le notebook 04) et passe directement à l'image suivante.
 
 | Touche | Action |
 |---|---|
-| clic gauche | placer / déplacer la ligne rouge |
-| ↑ ↓ (Maj : 10 px) | ajuster la ligne de 1 px |
-| `p` | reprendre la suggestion (pointillés jaunes : dernier niveau annoté, corrigé du mouvement de la caméra) |
-| Entrée / espace | valider : `niveau_px`, `exploitable = oui`, `verifie = 1` |
-| `x` | rejeter l'image : `exploitable = non`, `verifie = 1` |
-| → / ← | passer / revenir à l'image précédente |
+| clic gauche | enregistre le niveau et passe à la suivante |
+| Entrée / `p` | enregistre la suggestion (pointillés jaunes : dernier niveau annoté, corrigé du mouvement de la caméra) |
+| `x` | rejette l'image (`exploitable = non`) et passe à la suivante |
+| → | passe sans rien enregistrer |
+| ← | revient à l'image précédente (ligne rouge = niveau enregistré ; recliquer pour corriger) |
 | `q` | quitter (tout est déjà enregistré ; au prochain lancement, reprise à la première image non annotée) |
 
-Ne pas lancer `standardisation.py` ni `classification.py` pendant une session d'annotation. À plusieurs, se répartir les dates
-avec `--jour` pour éviter les conflits git sur le CSV.
+Chacun enregistre dans **son propre fichier** `data_treatment/annotations/niveau_<nom>.csv`
+(`fichier, niveau_px, exploitable, annote_le`) : pas de conflit git, chacun commite le sien.
+Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitable`, `verifie = 1`, `annotateur`) :
+
+```bash
+.venv/bin/python data_treatment/classification.py
+```
 
 Étape suivante, une fois les images annotées : la classification du niveau (`classe_niveau`).
