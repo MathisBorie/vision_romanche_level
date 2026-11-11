@@ -12,11 +12,15 @@ Colonnes écrites :
     exploitable     oui / douteux / non  (non = nuit ou taille inconnue ; voilée, brumeuse, reflets,
                     crépuscule ou alignement non fiable = douteux, à trier pendant l'annotation du niveau)
 
-Colonnes manuelles (créées vides si besoin, jamais écrasées) :
+Annotations du niveau : les fichiers annotations/niveau_<nom>.csv écrits par define_water_lvl.py
+(un par annotateur) sont reportés dans le catalogue : niveau_px, exploitable, verifie = 1, annotateur.
+
+Colonnes manuelles (créées vides si besoin, jamais écrasées sauf par les fichiers d'annotation) :
     niveau_px       y de la frontière eau / berge d'en face, en px de l'image d'origine
     classe_niveau   bas / moyen / haut / crue
     verifie         1 si un humain a vérifié la ligne : periode, visibilite, reflets et exploitable
                     de cette ligne ne sont alors plus recalculés (on peut les corriger à la main)
+    annotateur      qui a annoté le niveau (nom du fichier d'annotation)
     commentaire
 """
 from __future__ import annotations
@@ -28,6 +32,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent   # racine du projet (data/)
 CSV = Path(__file__).resolve().parent / "catalogue_images.csv"   # à côté des scripts
+ANNOTATIONS = Path(__file__).resolve().parent / "annotations"    # niveau_<nom>.csv (define_water_lvl.py)
 
 # Seuils, réglés en regardant des planches d'images (mesures calculées à 1/4 de résolution)
 LUM_NUIT, LUM_JOUR = 20, 80           # luminosite < 20 : nuit ; < 80 : crépuscule
@@ -36,7 +41,7 @@ SATURE_REFLETS = 2.0                  # pct_sature >= 2 % : reflets
 CONFIANCE_MIN = 0.2                   # confiance_alignement en dessous : décalage non fiable
 
 CLASSES = ["periode", "visibilite", "reflets", "exploitable"]
-MANUELLES = ["niveau_px", "classe_niveau", "verifie", "commentaire"]
+MANUELLES = ["niveau_px", "classe_niveau", "verifie", "annotateur", "commentaire"]
 MESURES = ["luminosite", "nettete", "pct_sature", "confiance_alignement"]
 
 
@@ -60,6 +65,33 @@ def classer(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def integrer_annotations(df: pd.DataFrame) -> int:
+    """Reporte les fichiers annotations/niveau_<nom>.csv dans df (modifié en place)."""
+    parts = []
+    for f in sorted(ANNOTATIONS.glob("niveau_*.csv")):
+        d = pd.read_csv(f, dtype=str, keep_default_na=False)
+        d["annotateur"] = f.stem.removeprefix("niveau_")
+        parts.append(d)
+    if not parts:
+        return 0
+    ann = pd.concat(parts, ignore_index=True)
+    doublons = ann.fichier[ann.fichier.duplicated()].unique()
+    if len(doublons):
+        print(f"Attention : {len(doublons)} images annotées par plusieurs personnes "
+              f"(on garde la plus récente), ex. {list(doublons[:3])}")
+    ann = ann.sort_values("annote_le").drop_duplicates("fichier", keep="last").set_index("fichier")
+    inconnues = ann.index.difference(df.fichier)
+    if len(inconnues):
+        print(f"Attention : {len(inconnues)} images annotées absentes du catalogue (ignorées)")
+    ann = ann.drop(inconnues)
+    lignes = df.index[df.fichier.isin(ann.index)]
+    f = df.loc[lignes, "fichier"]
+    for c in ["niveau_px", "exploitable", "annotateur"]:
+        df.loc[lignes, c] = ann.loc[f, c].to_numpy()
+    df.loc[lignes, "verifie"] = "1"
+    return len(lignes)
+
+
 def main():
     if not CSV.exists():
         raise FileNotFoundError(f"{CSV.name} absent : lancer standardisation.py d'abord")
@@ -71,6 +103,7 @@ def main():
     for c in CLASSES + MANUELLES:
         if c not in df:
             df[c] = ""
+    n_annot = integrer_annotations(df)
     a_classer = df.verifie != "1"             # les lignes vérifiées à la main gardent leurs classes
     df.loc[a_classer, CLASSES] = classer(df)[a_classer]
 
@@ -82,7 +115,9 @@ def main():
     for c in ["periode", "visibilite", "exploitable"]:
         print(f"  {c:12s}", df[c].replace("", "-").value_counts().to_dict())
     print(f"  reflets      {(df.reflets == '1').sum()}")
-    print(f"  niveaux annotés : {(df.niveau_px != '').sum()}")
+    print(f"  annotations reportées depuis {ANNOTATIONS.name}/ : {n_annot}")
+    print(f"  niveaux annotés : {(df.niveau_px != '').sum()}",
+          df.annotateur[df.annotateur != ""].value_counts().to_dict())
 
 
 if __name__ == "__main__":
