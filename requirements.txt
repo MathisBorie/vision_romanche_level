@@ -1,0 +1,8 @@
+boto3
+python-dotenv
+pillow
+matplotlib
+ipykernel
+numpy
+opencv-python
+pandas
