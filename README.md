@@ -138,8 +138,8 @@ Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitabl
 .venv/bin/python data_treatment/split_train_test.py --train 2 --test 1  # autre rapport
 ```
 
-- Découpage par **semaines entières** (lundi → dimanche, numérotées depuis la première semaine de la saison,
-  comme dans le notebook 05) : cycles de 4 semaines en `train` puis 1 semaine en `test`. Les photos d'une même
+- Découpage par **semaines entières** (lundi → dimanche, numérotées depuis la première semaine de la
+  saison) : cycles de 4 semaines en `train` puis 1 semaine en `test`. Les photos d'une même
   semaine (même niveau, même lumière) ne se retrouvent jamais des deux côtés.
 - Porte sur **toutes les photos**, annotées ou non : le découpage ne change pas quand on annote, et une nouvelle
   semaine de photos ne change pas les anciennes. Le catalogue n'est pas modifié.
@@ -162,8 +162,6 @@ Bilan au 21 novembre (photos jusqu'au 7 novembre) :
 Semaines de test : 22-28 juin, 31 août-6 septembre, 5-11 octobre. La semaine de test de fin juillet tombe dans le
 trou sans photos (9 juillet - 20 août) ; la suivante (9-15 novembre) apparaîtra en téléchargeant les nouvelles photos
 puis en relançant la chaîne (étapes 1 à 4 et 6).
-
-Attention : la cellule 9 du notebook 05 réécrit `split_train_test.csv` avec un découpage 2 / 1.
 
 Étape suivante, une fois les images annotées : la classification du niveau (`classe_niveau`).
 
