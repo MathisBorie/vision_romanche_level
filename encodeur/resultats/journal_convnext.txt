@@ -1,0 +1,25 @@
+convnext (convnext_tiny.fb_in22k_ft_in1k) sur cuda | train 2652 photos / 12 semaines, val 841 photos / 4 semaines, test 883 photos / 3 semaines
+référence naïve (niveau moyen de train) sur test : erreur moyenne 47.39 px
+époque  1/20  perte train  22.64 px | val : moyenne  11.29 px, médiane  9.60 px  (38 s)
+époque  2/20  perte train   5.54 px | val : moyenne   7.51 px, médiane  6.90 px  (35 s)
+époque  3/20  perte train   4.68 px | val : moyenne   9.58 px, médiane  8.40 px  (33 s)
+époque  4/20  perte train   4.34 px | val : moyenne  10.41 px, médiane  9.10 px  (35 s)
+époque  5/20  perte train   4.08 px | val : moyenne  10.33 px, médiane  9.70 px  (35 s)
+époque  6/20  perte train   3.76 px | val : moyenne   8.65 px, médiane  7.80 px  (35 s)
+époque  7/20  perte train   3.65 px | val : moyenne  10.91 px, médiane  9.70 px  (35 s)
+époque  8/20  perte train   3.36 px | val : moyenne   9.91 px, médiane  9.10 px  (35 s)
+époque  9/20  perte train   3.01 px | val : moyenne   8.80 px, médiane  7.90 px  (35 s)
+époque 10/20  perte train   2.83 px | val : moyenne   8.82 px, médiane  7.70 px  (33 s)
+époque 11/20  perte train   2.52 px | val : moyenne   8.78 px, médiane  7.80 px  (35 s)
+époque 12/20  perte train   2.33 px | val : moyenne  10.11 px, médiane  9.00 px  (35 s)
+époque 13/20  perte train   2.22 px | val : moyenne   9.83 px, médiane  8.80 px  (35 s)
+époque 14/20  perte train   1.99 px | val : moyenne   9.65 px, médiane  8.80 px  (35 s)
+époque 15/20  perte train   1.80 px | val : moyenne   9.03 px, médiane  8.00 px  (35 s)
+époque 16/20  perte train   1.71 px | val : moyenne  10.13 px, médiane  9.20 px  (35 s)
+époque 17/20  perte train   1.59 px | val : moyenne   9.85 px, médiane  8.90 px  (33 s)
+époque 18/20  perte train   1.49 px | val : moyenne   9.82 px, médiane  8.80 px  (35 s)
+époque 19/20  perte train   1.47 px | val : moyenne   9.85 px, médiane  8.80 px  (35 s)
+époque 20/20  perte train   1.45 px | val : moyenne   9.86 px, médiane  8.80 px  (35 s)
+
+TEST (883 photos, époque 2) : erreur moyenne 6.49 px, médiane 5.9 px, max 25.1 px | 43.4 % à 5 px, 76.9 % à 10 px, 99.9 % à 20 px
+Résultats dans encodeur/resultats/convnext/
