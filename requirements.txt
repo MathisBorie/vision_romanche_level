@@ -6,6 +6,7 @@ ipykernel
 numpy
 opencv-python
 pandas
+timm
 torch
 torchvision
 transformers

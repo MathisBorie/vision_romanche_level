@@ -166,3 +166,13 @@ puis en relançant la chaîne (étapes 1 à 4 et 6).
 Attention : la cellule 9 du notebook 05 réécrit `split_train_test.csv` avec un découpage 2 / 1.
 
 Étape suivante, une fois les images annotées : la classification du niveau (`classe_niveau`).
+
+## Encodeur : détection du niveau par réseau de neurones
+
+Dossier [`encodeur/`](encodeur/README.md) : un encodeur pré-entraîné (DINOv2, ConvNeXt ou ResNet-50 ;
+pas de Segment Anything) et une petite tête qui prédit la frontière eau / berge, entraînés sur les photos
+annotées et le découpage train / test de l'étape 6.
+
+```bash
+.venv/bin/python encodeur/entrainer.py --encodeur dinov2
+```
