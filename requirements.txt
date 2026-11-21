@@ -9,3 +9,4 @@ pandas
 torch
 torchvision
 timm
+scikit-learn

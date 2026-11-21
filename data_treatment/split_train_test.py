@@ -4,7 +4,7 @@
     .venv/bin/python data_treatment/split_train_test.py --train 2 --test 1
 
 Semaine = semaine du calendrier (lundi -> dimanche), numérotée à partir de la première semaine de la
-saison (même définition que le notebook 05). Les semaines se suivent par cycles : les --train premières
+saison. Les semaines se suivent par cycles : les --train premières
 semaines du cycle vont en train, les --test suivantes en test. Une semaine entière va dans le même
 ensemble : les photos d'une même semaine (même niveau d'eau, même lumière) ne se retrouvent jamais
 des deux côtés.
