@@ -1,0 +1,7 @@
+[
+ {"image": "img1", "annotable": true, "y": [752, 752, 750, 748, 748, 745, 745, 742, 745, 745], "fiabilite_colonnes": [4, 4, 4, 4, 4, 4, 3, 3, 3, 3], "fiabilite": 4, "commentaire": "Berge rocheuse sombre nette en haut, eau claire lisse en bas ; reflets clairs sur l'eau vers la droite, frontiere bien visible."},
+ {"image": "img2", "annotable": true, "y": [838, 838, 840, 835, 835, 835, 840, 855, 880, 890], "fiabilite_colonnes": [3, 3, 3, 3, 3, 3, 2, 2, 2, 2], "fiabilite": 2, "commentaire": "Contre-jour et forte variation de teinte : eau ecumeuse claire a gauche, eau sombre a droite ; frontiere floue vers la droite."},
+ {"image": "img3", "annotable": true, "y": [850, 850, 848, 848, 848, 846, 846, 846, 848, 850], "fiabilite_colonnes": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2], "fiabilite": 2, "commentaire": "Brume et faible contraste gris sur gris ; zone pale de galets en C5-C10 au-dessus de la frontiere, frontiere estimee vers 850."},
+ {"image": "img4", "annotable": true, "y": [850, 848, 850, 852, 850, 850, 852, 852, 848, 846], "fiabilite_colonnes": [4, 4, 4, 4, 4, 4, 4, 4, 3, 3], "fiabilite": 3, "commentaire": "Eau gris-bleu sous berge rocheuse claire ; frontiere assez nette, legere ambiguite a droite."},
+ {"image": "img5", "annotable": true, "y": [852, 850, 850, 852, 852, 852, 850, 850, 848, 848], "fiabilite_colonnes": [3, 3, 3, 3, 3, 3, 3, 3, 3, 3], "fiabilite": 3, "commentaire": "Image floue et peu contrastee ; frontiere berge/eau visible mais diffuse sur toute la largeur."}
+]
