@@ -6,3 +6,7 @@ ipykernel
 numpy
 opencv-python
 pandas
+torch
+torchvision
+timm
+scikit-learn

@@ -131,4 +131,46 @@ Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitabl
 .venv/bin/python data_treatment/classification.py
 ```
 
+### 6. Découper en train / test : `split_train_test.py` → `data_treatment/split_train_test.csv`
+
+```bash
+.venv/bin/python data_treatment/split_train_test.py                     # 4 semaines train, 1 semaine test
+.venv/bin/python data_treatment/split_train_test.py --train 2 --test 1  # autre rapport
+```
+
+- Découpage par **semaines entières** (lundi → dimanche, numérotées depuis la première semaine de la
+  saison) : cycles de 4 semaines en `train` puis 1 semaine en `test`. Les photos d'une même
+  semaine (même niveau, même lumière) ne se retrouvent jamais des deux côtés.
+- Porte sur **toutes les photos**, annotées ou non : le découpage ne change pas quand on annote, et une nouvelle
+  semaine de photos ne change pas les anciennes. Le catalogue n'est pas modifié.
+- Sorties :
+  - `data_treatment/split_train_test.csv` (`fichier, semaine, split`), versionné ;
+  - `data/dataset/training/` et `data/dataset/test/` : les images de chaque ensemble, en **liens physiques**
+    vers `data/images/` (pas d'espace disque en plus, `data/images/` n'est pas modifié). Les deux dossiers sont
+    vidés puis refaits à chaque lancement. Ne pas modifier ces images : c'est le même fichier que dans
+    `data/images/`. `--sans-dossiers` pour ne produire que le CSV.
+- Le script affiche le bilan.
+
+Bilan au 21 novembre (photos jusqu'au 7 novembre) :
+
+|  | photos | exploitables | annotées |
+|---|---|---|---|
+| train | 4 437 | 3 495 | 2 363 |
+| test | 1 090 | 883 | 552 |
+| % test | 19,7 % | 20,2 % | 18,9 % |
+
+Semaines de test : 22-28 juin, 31 août-6 septembre, 5-11 octobre. La semaine de test de fin juillet tombe dans le
+trou sans photos (9 juillet - 20 août) ; la suivante (9-15 novembre) apparaîtra en téléchargeant les nouvelles photos
+puis en relançant la chaîne (étapes 1 à 4 et 6).
+
 Étape suivante, une fois les images annotées : la classification du niveau (`classe_niveau`).
+
+## Encodeur : détection du niveau par réseau de neurones
+
+Dossier [`encodeur/`](encodeur/README.md) : un encodeur pré-entraîné (DINOv2, ConvNeXt ou ResNet-50 ;
+pas de Segment Anything) et une petite tête qui prédit la frontière eau / berge, entraînés sur les photos
+annotées et le découpage train / test de l'étape 6.
+
+```bash
+.venv/bin/python encodeur/entrainer.py --encodeur dinov2
+```
