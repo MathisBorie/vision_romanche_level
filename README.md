@@ -169,9 +169,8 @@ Attention : la cellule 9 du notebook 05 réécrit `split_train_test.csv` avec un
 
 ## Encodeur : détection du niveau par réseau de neurones
 
-Dossier [`encodeur/`](encodeur/README.md) : un encodeur pré-entraîné (DINOv2, ConvNeXt ou ResNet-50 ;
-pas de Segment Anything) et une petite tête qui prédit la frontière eau / berge, entraînés sur les photos
-annotées et le découpage train / test de l'étape 6.
+Dossier [`encodeur/`](encodeur/README.md) : un encodeur pré-entraîné (DINOv2, ConvNeXt ou ResNet-50) et une petite tête qui prédit la frontière eau / berge, entraînés sur les photos
+annotées et le découpage train / test.
 
 ```bash
 .venv/bin/python encodeur/entrainer.py --encodeur dinov2
