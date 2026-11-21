@@ -10,3 +10,4 @@ timm
 torch
 torchvision
 transformers
+scikit-learn
