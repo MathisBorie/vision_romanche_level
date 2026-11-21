@@ -8,14 +8,14 @@ from matplotlib.backends.backend_pdf import PdfPages
 # 1. PARAMÈTRES
 # ==========================================
 
-images = sorted(pathlib.Path("data/raw/romanche-01/2026/11/06").glob("*.jpg"))
+images = sorted(pathlib.Path("data/raw/romanche-01/2026/06/15").glob("*.jpg"))
 
 # Zone verticale de recherche (on garde ta zone)
 Y_MIN_RATIO = 0.30
-Y_MAX_RATIO = 0.65
+Y_MAX_RATIO = 0.50
 
 # Lissage du signal (un peu plus grand pour bien lisser les micro-variations des rochers)
-SMOOTHING = 41
+SMOOTHING = 49
 
 # Paramètres de Canny
 CANNY_LOW = 50

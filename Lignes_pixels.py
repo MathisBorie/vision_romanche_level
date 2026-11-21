@@ -9,7 +9,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 # 1. PARAMÈTRES
 # ==========================================
 
-images = sorted(pathlib.Path("data/raw/romanche-01/2026/11/06").glob("*.jpg"))
+images = sorted(pathlib.Path("data/raw/romanche-01/2026/06/15").glob("*.jpg"))
 
 
 # Région verticale de recherche
