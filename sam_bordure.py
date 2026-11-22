@@ -13,6 +13,8 @@ Utilisation :
     .venv/bin/python sam_bordure.py                          # toutes les images annotées (reprise auto)
     .venv/bin/python sam_bordure.py --annotateur mathis
     .venv/bin/python sam_bordure.py --fichier 2026-07-05-110011.jpg --montrer
+    .venv/bin/python sam_bordure.py --liste evaluation/test_encodeur.csv --sortie evaluation/sam_test.csv
+        (mêmes photos et même vérité que le test des encodeurs : comparaison directe)
 
 Sorties :
     annotations/sam_bordure.csv   fichier, niveau_px, y_sam, ecart, score_sam, x100 ... x1900
@@ -21,6 +23,7 @@ Sorties :
 from __future__ import annotations
 
 import argparse
+import time
 from pathlib import Path
 
 import cv2
@@ -94,7 +97,11 @@ class Segmenteur:
 
 
 def bordure(masque: np.ndarray) -> np.ndarray:
-    """y du bord supérieur de la plus grande composante d'eau, pour chaque colonne (NaN si absente)."""
+    """y du bord supérieur de la plus grande composante d'eau, pour chaque colonne (NaN si absente).
+
+    Garder toutes les composantes assez grandes (essayé) récupère l'eau calme morcelée, mais garde aussi
+    des taches sur le mur : 31 photos de test empirent pour 1 corrigée. On garde donc la plus grande.
+    """
     n, lab, stats, _ = cv2.connectedComponentsWithStats(masque.astype(np.uint8), connectivity=8)
     if n <= 1:
         return np.full(masque.shape[1], np.nan)
@@ -130,15 +137,23 @@ def figure(img: Image.Image, masque: np.ndarray, y: np.ndarray, niveau: float, y
 
 
 def main():
+    global SORTIE
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--n", type=int, help="échantillon aléatoire de N images")
     ap.add_argument("--annotateur", help="seulement les annotations de cette personne")
     ap.add_argument("--fichier", nargs="+", help="seulement ces images")
     ap.add_argument("--montrer", action="store_true", help="enregistre une figure par image")
+    ap.add_argument("--liste", type=Path, help="CSV (fichier, niveau_px) : ces photos, avec ce niveau comme vérité")
+    ap.add_argument("--sortie", type=Path, default=SORTIE, help=f"CSV de sortie (défaut {SORTIE.relative_to(ROOT)})")
     ap.add_argument("--refaire", action="store_true", help="recalcule même les images déjà traitées")
     args = ap.parse_args()
 
-    df = charger_annotations(args.annotateur)
+    SORTIE = args.sortie
+    if args.liste:
+        df = pd.read_csv(args.liste)[["fichier", "niveau_px"]]
+        df = df[df["fichier"].map(lambda f: (IMAGES / f).exists())].reset_index(drop=True)
+    else:
+        df = charger_annotations(args.annotateur)
     if args.fichier:
         df = df[df["fichier"].isin(args.fichier)]
     deja = pd.read_csv(SORTIE) if SORTIE.exists() else pd.DataFrame(columns=["fichier"])
@@ -156,6 +171,7 @@ def main():
     seg = Segmenteur(device)
 
     lignes = []
+    t0 = time.time()
     for i, r in enumerate(df.itertuples(), 1):
         img = Image.open(IMAGES / r.fichier).convert("RGB")
         masque, score = seg.masque_eau(img)
@@ -173,6 +189,7 @@ def main():
             deja = enregistrer(deja, lignes)
             lignes = []
     deja = enregistrer(deja, lignes)
+    print(f"durée : {(time.time() - t0) / 60:.1f} min ({(time.time() - t0) / len(df):.2f} s/image, {device})")
     resume(deja)
 
 
@@ -185,12 +202,22 @@ def enregistrer(deja: pd.DataFrame, lignes: list[dict]) -> pd.DataFrame:
     return deja
 
 
+def metriques(ecart: pd.Series) -> dict:
+    """Mêmes métriques que encodeur/entrainer.py (erreur absolue en px)."""
+    e = ecart.abs()
+    return {"n": len(e), "erreur_moyenne_px": round(e.mean(), 2), "erreur_mediane_px": round(e.median(), 2),
+            "erreur_max_px": round(e.max(), 1), "a_5px_pct": round(100 * (e <= 5).mean(), 1),
+            "a_10px_pct": round(100 * (e <= 10).mean(), 1), "a_20px_pct": round(100 * (e <= 20).mean(), 1),
+            "biais_moyen_px": round(ecart.mean(), 2)}
+
+
 def resume(d: pd.DataFrame):
     if d.empty or "ecart" not in d:
         return
-    e = d["ecart"].abs().dropna()
-    print(f"\n{len(e)} images : erreur absolue médiane {e.median():.1f} px, moyenne {e.mean():.1f} px, "
-          f"< 10 px : {(e < 10).mean():.0%}, < 25 px : {(e < 25).mean():.0%}")
+    manquants = d["ecart"].isna().sum()
+    print(f"\n{len(d)} images" + (f" ({manquants} sans eau détectée, exclues)" if manquants else ""))
+    for k, v in metriques(d["ecart"].dropna()).items():
+        print(f"  {k:20s} {v}")
 
 
 if __name__ == "__main__":
