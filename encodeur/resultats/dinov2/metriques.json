@@ -4,20 +4,20 @@
   "meilleure_epoque": 6,
   "val": {
     "n": 841,
-    "erreur_moyenne_px": 8.13,
+    "erreur_moyenne_px": 7.96,
     "erreur_mediane_px": 7.1,
-    "erreur_max_px": 36.8,
-    "a_5px_pct": 37.3,
-    "a_10px_pct": 64.6,
-    "a_20px_pct": 96.7
+    "erreur_max_px": 35.3,
+    "a_5px_pct": 37.5,
+    "a_10px_pct": 64.8,
+    "a_20px_pct": 97.6
   },
   "test": {
     "n": 883,
-    "erreur_moyenne_px": 5.97,
-    "erreur_mediane_px": 5.3,
-    "erreur_max_px": 23.3,
-    "a_5px_pct": 48.5,
-    "a_10px_pct": 80.3,
+    "erreur_moyenne_px": 5.89,
+    "erreur_mediane_px": 5.2,
+    "erreur_max_px": 23.2,
+    "a_5px_pct": 48.9,
+    "a_10px_pct": 82.7,
     "a_20px_pct": 99.9
   },
   "test_reference_naive": {

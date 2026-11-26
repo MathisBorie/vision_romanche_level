@@ -1,0 +1,13 @@
+categorie,methode,erreur_moyenne,erreur_mediane,erreur_max,biais,a5,a10,a20,apprentissage,duree,temps_image,temps_image_ms,n,sans_prediction
+Lignes de pixels (sans apprentissage),Stats RGB,88.41,95.0,250.0,-79.36,10.3,17.4,27.5,aucun,—,219 ms (CPU 1 cœur),218.9,883.0,0.0
+Lignes de pixels (sans apprentissage),Canny + gradient,29.0,9.0,254.0,-14.13,31.0,54.5,77.5,aucun,—,48 ms (CPU 1 cœur),47.6,883.0,0.0
+Lignes de pixels (sans apprentissage),Texture (variance locale),20.6,9.0,255.0,-0.94,32.0,57.8,81.2,aucun,—,126 ms (CPU 1 cœur),125.9,883.0,0.0
+POD,"POD + linéaire, K = 750",13.48,11.8,91.1,-9.08,18.2,42.5,78.4,régression,53 s (CPU i9-12900K),17 ms (CPU 1 cœur),17.0,883.0,0.0
+POD,"POD + réseau, K = 300",11.57,10.4,114.3,-6.39,25.1,49.2,86.2,~1124 itér. (3 graines),3 min (CPU i9-12900K),17 ms (CPU 1 cœur),17.1,883.0,0.0
+POD,"POD + réseau, K = 750",10.47,8.8,120.8,-5.41,28.1,54.9,90.0,~1201 itér. (3 graines),7 min (CPU i9-12900K),17 ms (CPU 1 cœur),17.2,883.0,0.0
+SAM 2.1-S (segmentation),SAM zéro-shot,8.86,7.0,574.0,5.56,42.2,71.1,94.9,aucun,—,112 ms (RTX 3080 Ti),112.5,883.0,0.0
+SAM 2.1-S (segmentation),"SAM, décodeur affiné",6.49,6.0,27.6,-2.46,44.3,77.9,99.4,1 époques,14 min (RTX 3080 Ti),90 ms (RTX 3080 Ti),89.8,883.0,0.0
+Encodeurs pré-entraînés,ResNet-50 (affiné),6.31,5.3,23.0,0.77,47.3,77.9,99.4,5 époques,12 min (RTX 3080 Ti),31 ms (RTX 3080 Ti),30.8,883.0,0.0
+Encodeurs pré-entraînés,ConvNeXt-Tiny (affiné),6.49,5.9,25.1,-1.96,43.4,76.9,99.9,2 époques,12 min (RTX 3080 Ti),31 ms (RTX 3080 Ti),30.6,883.0,0.0
+Encodeurs pré-entraînés,DINOv2 ViT-S (gelé),5.89,5.2,23.2,-0.73,48.9,82.7,99.9,6 époques,9 min (RTX 3080 Ti),34 ms (RTX 3080 Ti),33.8,883.0,0.0
+Référence,Niveau moyen de train,47.4,,,,,,,—,—,—,,,

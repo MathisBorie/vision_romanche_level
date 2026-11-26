@@ -1,0 +1,16 @@
+{
+  "cuda": {
+    "preparation_ms": 18.7,
+    "reseau_ms": 13.3,
+    "total_ms": 32.0,
+    "n": 100,
+    "machine": "RTX 3080 Ti"
+  },
+  "cpu": {
+    "preparation_ms": 19.6,
+    "reseau_ms": 596.7,
+    "total_ms": 616.2,
+    "n": 100,
+    "machine": "CPU 12 threads"
+  }
+}

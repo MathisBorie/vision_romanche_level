@@ -173,3 +173,21 @@ annotées et le découpage train / test.
 ```bash
 .venv/bin/python encodeur/entrainer.py --encodeur dinov2
 ```
+
+## Comparaison de toutes les méthodes sur le même PC
+
+Dossier [`comparaison/`](comparaison/) : relance toutes les méthodes (lignes de pixels, POD, SAM 2 zéro-shot et
+affiné, encodeurs) sur la même machine, avec les mêmes photos test, la même vérité et le même train / val, puis
+produit le tableau `comparaison/resultats/tableau_comparaison.png` (erreurs, biais, durée d'entraînement,
+**temps par image**).
+
+```bash
+.venv/bin/pip install -r requirements.txt                       # une fois (torch, timm, transformers, scikit-learn...)
+.venv/bin/python comparaison/tout_relancer.py                   # tout : ~1 h 15 sur RTX 3080 Ti
+.venv/bin/python comparaison/tout_relancer.py --methodes pod sam # seulement certaines étapes (+ tableau)
+.venv/bin/python comparaison/tout_relancer.py --methodes tableau # redessiner le tableau
+```
+
+Étapes : `lignes` (Stats RGB, Canny + gradient, Texture), `pod` (POD + linéaire / réseau, K = 300 et 750),
+`sam` (zéro-shot), `sam_affine` (décodeur affiné, 4 époques), `encodeurs` (ResNet-50, ConvNeXt-Tiny, DINOv2,
+réentraînés), `tableau`. Journaux : `comparaison/resultats/journal_<étape>.txt`.

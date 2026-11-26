@@ -1,0 +1,48 @@
+CPU i9-12900K | GPU RTX 3080 Ti
+SAM décodeur affiné : 4 époques, sorties dans comparaison/resultats/sam_affine/
+{'train': 2652, 'val': 841, 'test': 883}
+[transformers] You are using a model of type `sam2_video` to instantiate a model of type `sam2`. This may be expected if you are loading a checkpoint that shares a subset of the architecture (e.g., loading a `sam2_video` checkpoint into `Sam2Model`), but is otherwise not supported and can yield errors. Please verify that the checkpoint is compatible with the model you are instantiating.
+Loading weights:   0%|          | 0/357 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 153/357 [00:00<00:00, 1521.47it/s]Loading weights: 100%|██████████| 357/357 [00:00<00:00, 2220.83it/s]
+facebook/sam2.1-hiera-small sur cuda ; décodeur entraîné : 4.2 M paramètres
+époque 0 (sans entraînement)  val 40.80 px  biais -35.27
+  époque 1  lot 100/663  perte 10.76
+  époque 1  lot 200/663  perte 6.63
+  époque 1  lot 300/663  perte 6.69
+  époque 1  lot 400/663  perte 5.78
+  époque 1  lot 500/663  perte 5.44
+  époque 1  lot 600/663  perte 5.59
+époque 1  perte 6.66  val 8.17 px  médiane 7.10  biais -3.12  (3 min)
+  époque 2  lot 100/663  perte 4.92
+  époque 2  lot 200/663  perte 5.19
+  époque 2  lot 300/663  perte 5.38
+  époque 2  lot 400/663  perte 5.18
+  époque 2  lot 500/663  perte 5.52
+  époque 2  lot 600/663  perte 5.01
+époque 2  perte 5.18  val 8.84 px  médiane 7.80  biais -5.27  (6 min)
+  époque 3  lot 100/663  perte 4.96
+  époque 3  lot 200/663  perte 4.96
+  époque 3  lot 300/663  perte 5.36
+  époque 3  lot 400/663  perte 4.62
+  époque 3  lot 500/663  perte 4.67
+  époque 3  lot 600/663  perte 4.70
+époque 3  perte 4.87  val 8.23 px  médiane 7.10  biais -3.72  (9 min)
+  époque 4  lot 100/663  perte 4.83
+  époque 4  lot 200/663  perte 4.53
+  époque 4  lot 300/663  perte 4.42
+  époque 4  lot 400/663  perte 4.82
+  époque 4  lot 500/663  perte 4.87
+  époque 4  lot 600/663  perte 4.68
+époque 4  perte 4.67  val 8.32 px  médiane 7.30  biais -3.93  (12 min)
+
+meilleure époque 1 ; test :
+  n                    883
+  erreur_moyenne_px    6.49
+  erreur_mediane_px    6.0
+  erreur_max_px        27.6
+  a_5px_pct            44.3
+  a_10px_pct           77.9
+  a_20px_pct           99.4
+  biais_moyen_px       -2.46
+[transformers] You are using a model of type `sam2_video` to instantiate a model of type `sam2`. This may be expected if you are loading a checkpoint that shares a subset of the architecture (e.g., loading a `sam2_video` checkpoint into `Sam2Model`), but is otherwise not supported and can yield errors. Please verify that the checkpoint is compatible with the model you are instantiating.
+Loading weights:   0%|          | 0/357 [00:00<?, ?it/s]Loading weights:  53%|█████▎    | 189/357 [00:00<00:00, 1885.18it/s]Loading weights: 100%|██████████| 357/357 [00:00<00:00, 2295.64it/s]
+  SAM, décodeur affiné         erreur moyenne    6.5 px  médiane   6.0  max    28  biais  -2.5 | entraînement 13.9 min | 89.8 ms/image (RTX 3080 Ti)

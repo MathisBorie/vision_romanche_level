@@ -1,0 +1,22 @@
+{
+  "cle": "lignes_rgb",
+  "categorie": "Lignes de pixels (sans apprentissage)",
+  "methode": "Stats RGB",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 88.41,
+    "erreur_mediane": 95.0,
+    "erreur_max": 250.0,
+    "biais": -79.36,
+    "a5": 10.3,
+    "a10": 17.4,
+    "a20": 27.5
+  },
+  "sans_prediction": 0,
+  "apprentissage": "aucun",
+  "duree_entrainement_s": null,
+  "machine_entrainement": null,
+  "temps_image_ms": 218.9,
+  "machine_image": "CPU 1 cœur",
+  "duree_totale_test_s": 192.3
+}
