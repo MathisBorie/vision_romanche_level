@@ -1,0 +1,24 @@
+{
+  "cle": "pod_reseau_750",
+  "categorie": "POD",
+  "methode": "POD + réseau, K = 750",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 10.47,
+    "erreur_mediane": 8.8,
+    "erreur_max": 120.8,
+    "biais": -5.41,
+    "a5": 28.1,
+    "a10": 54.9,
+    "a20": 90.0
+  },
+  "sans_prediction": 0,
+  "apprentissage": "~1201 itér. (3 graines)",
+  "duree_entrainement_s": 418.4,
+  "machine_entrainement": "CPU i9-12900K",
+  "temps_image_ms": 17.2,
+  "machine_image": "CPU 1 cœur",
+  "K": 750,
+  "photos_base_pod": 3494,
+  "photos_annotees_train": 3493
+}

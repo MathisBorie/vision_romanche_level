@@ -1,0 +1,22 @@
+{
+  "cle": "lignes_texture",
+  "categorie": "Lignes de pixels (sans apprentissage)",
+  "methode": "Texture (variance locale)",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 20.6,
+    "erreur_mediane": 9.0,
+    "erreur_max": 255.0,
+    "biais": -0.94,
+    "a5": 32.0,
+    "a10": 57.8,
+    "a20": 81.2
+  },
+  "sans_prediction": 0,
+  "apprentissage": "aucun",
+  "duree_entrainement_s": null,
+  "machine_entrainement": null,
+  "temps_image_ms": 125.9,
+  "machine_image": "CPU 1 cœur",
+  "duree_totale_test_s": 110.4
+}

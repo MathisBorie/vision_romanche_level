@@ -1,0 +1,22 @@
+{
+  "cle": "sam_affine",
+  "categorie": "SAM 2.1-S (segmentation)",
+  "methode": "SAM, décodeur affiné",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 6.49,
+    "erreur_mediane": 6.0,
+    "erreur_max": 27.6,
+    "biais": -2.46,
+    "a5": 44.3,
+    "a10": 77.9,
+    "a20": 99.4
+  },
+  "sans_prediction": 0,
+  "apprentissage": "1 époques",
+  "duree_entrainement_s": 831.8,
+  "machine_entrainement": "RTX 3080 Ti",
+  "temps_image_ms": 89.8,
+  "machine_image": "RTX 3080 Ti",
+  "epoques_lancees": 4
+}
