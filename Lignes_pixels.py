@@ -81,7 +81,7 @@ def detect_waterline(image_path):
 # ==========================================
 
 if __name__ == "__main__":
-    output_pdf = pathlib.Path("Lignes_pixel2_report.pdf")
+    output_pdf = pathlib.Path("Lignes_pixels_report.pdf")
 
     if not images:
         raise FileNotFoundError("Aucune image trouvée dans data/raw/romanche-01/2026/11/06")
