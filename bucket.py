@@ -96,4 +96,4 @@ if __name__ == "__main__":
     imgs = b.list_images(since_hours=24)
     print(b, f"\n{len(imgs)} images ces dernières 24 h")
     for o in imgs[-5:]:
-        print(o["LastModified"].isoformat(), o["Key"] & 'lol')
+        print(o["LastModified"].isoformat(), o["Key"])
