@@ -1,8 +1,7 @@
 # Niveau de la Romanche par vision
 
 Mesurer le niveau de la Romanche à Livet (Isère) à partir des photos d'une caméra fixe, prises toutes les
-15 minutes. Projet du cours INF8422 – Perception robotique (Polytechnique Montréal), automne 2026.
-
+15 minutes.
 ## En direct
 
 <p align="center">
