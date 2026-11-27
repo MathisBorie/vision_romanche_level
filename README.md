@@ -1,198 +1,61 @@
-# vision_romanche_level
+# Niveau de la Romanche par vision
 
-Projet de vision pour le niveau de la Romanche.
+Mesurer le niveau de la Romanche à Livet (Isère) à partir des photos d'une caméra fixe, prises toutes les
+15 minutes. Projet du cours INF8422 – Perception robotique (Polytechnique Montréal), automne 2026.
 
-## La Romanche en direct
+## En direct
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/MathisBorie/vision_romanche_level/live/niveau_live.jpg" alt="Dernière photo de la caméra et niveau d'eau mesuré" width="720">
 </p>
 
-<p align="center">
-  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml/badge.svg" alt="État de la mise à jour"></a>
-  &nbsp;
-  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://img.shields.io/badge/%E2%86%BB-relancer%20%2F%20r%C3%A9activer-2ea44f" alt="Relancer ou réactiver la mise à jour"></a>
-  &nbsp;
-  <a href="https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv"><img src="https://img.shields.io/badge/historique-CSV-blue" alt="Historique des mesures"></a>
-</p>
+- **trait vert** : DINOv2
+- **trait bleu** : SAM affiné
+- **trait rouge** : SAM sans entraînement
+- **pointillés blancs** : repères 1,0 / 1,5 / 1,8 m
 
-Dernière photo de la caméra (mise à jour toutes les 15 min, avec 15 à 30 min de retard), avec le niveau
-d'eau mesuré par DINOv2 (ligne bleue), converti en mètres sur l'échelle de Simon (traits 1,0 / 1,5 / 1,8 m).
-Si l'image n'avance plus : bouton **relancer / réactiver**, puis *Enable workflow* (si GitHub a mis la
-tâche en pause) ou *Run workflow* (mise à jour immédiate).
+Mise à jour toutes les 15 min · [relancer / réactiver](https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml) · [historique](https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv)
 
-Mesurer le niveau sur n'importe quelle photo : [`niveau_eau/`](niveau_eau/LISEZMOI.md)
-(`mesurer_niveau(image, methode)`, 3 méthodes, poids téléchargés automatiquement).
+## Trois modèles disponibles
 
-## Accès aux images (bucket S3)
-
-Les photos de la caméra sont dans le bucket AWS S3 `romanche-mathis` (région `us-east-2`),
-rangées par `romanche-01/AAAA/MM/JJ/HHMMSS_xxxxxxxx_s.jpg` (une image toutes les 15 min).
-
-1. Installer l'environnement :
-   ```bash
-   python3 -m venv .venv
-   .venv/bin/pip install -r requirements.txt
-   ```
-2. Copier `.env.example` en `.env` et y coller la clé d'accès (demander à Mathis, par message privé).
-   `.env` est ignoré par git : ne jamais commiter la clé.
-3. Tester : `.venv/bin/python bucket.py` (liste les images des dernières 24 h).
-4. Explorer : `notebooks/navigation_bucket.ipynb` (lister les dossiers, afficher, télécharger dans `data/raw/`).
+Nous mettons à disposition trois modèles, avec leurs poids, dans [`niveau_eau/`](niveau_eau/) :
 
 ```python
-from bucket import Bucket
-b = Bucket()
-dossiers, images = b.ls("romanche-01/2026/11/")   # naviguer dans l'arborescence
-img = b.load_image(images[0]["Key"])               # image PIL en mémoire
-b.download(b.list_images(since_hours=24))           # télécharger dans data/raw/
+from niveau_eau import mesurer_niveau
+mesurer_niveau("photo.jpg", methode=3, en_metres=True)   # 1 = SAM brut, 2 = SAM affiné, 3 = DINOv2
 ```
 
-## Préparation des données (7 novembre 2026)
+Nous en gardons trois parce qu'ils ne vieilliront pas de la même façon. DINOv2 et SAM affiné ont appris sur
+nos photos de mai à novembre : si la berge change (végétation, enrochement déplacé par une crue, neige), ils
+peuvent se dérégler. **SAM sans entraînement est le moins précis sur le papier, mais sans doute le plus
+stable dans le temps** : il ne connaît pas nos photos, il se contente de séparer l'eau du reste, ce qui ne
+dépend pas de l'aspect de la berge.
 
-Chaîne de traitement, à lancer dans l'ordre (chaque étape peut être relancée : elle ne refait que ce qui manque).
+## Résultats
 
-### 1. Télécharger toutes les images
+Erreur sur 883 photos de 3 semaines jamais vues à l'entraînement (juin, septembre, octobre), en pixels.
+Vers 1 m d'eau, 1 px ≈ 1 cm.
 
-```bash
-.venv/bin/python -c "from bucket import Bucket; b = Bucket(); b.download(b.list_images())"
-```
+| Famille | Méthode | Erreur moyenne | Médiane | Pire cas | À 10 px près |
+|---|---|---|---|---|---|
+| Sans apprentissage | Lignes de pixels (texture) | 20,6 | 9,0 | 255 | 58 % |
+| Études mathématiques | PLS + réseau | 10,7 | 9,3 | 105 | 53 % |
+| | POD + réseau | 10,5 | 8,8 | 121 | 55 % |
+| Apprentissage | CNN entraîné de zéro | 7,7 | 6,5 | 30 | 68 % |
+| | **SAM sans entraînement** | 8,9 | 7,0 | 574 | 71 % |
+| | **SAM affiné** | 6,5 | 6,0 | 28 | 78 % |
+| | ResNet-50 affiné | 6,3 | 5,3 | 23 | 78 % |
+| | **DINOv2 gelé + tête** | **5,9** | **5,2** | **23** | **83 %** |
+| Référence | toujours le niveau moyen | 47,4 | | | |
 
-Au 7 novembre : 5 527 images (2,7 Go) du 29 mai au 7 novembre 2026, dans `data/raw/` (ignoré par git).
+## Organisation
 
-### 2. Rassembler les images dans un seul dossier : `restructure.py`
-
-```bash
-.venv/bin/python data_treatment/restructure.py
-```
-
-- `data/raw/romanche-01/2026/11/06/104512_02821fd2_s.jpg` → `data/images/2026-11-06-104512.jpg`
-- Liens physiques par défaut : pas d'espace disque en plus, `data/raw/` reste intact (`--move` pour déplacer).
-- **Images portrait** : les 1er, 3 et 4 juin, la caméra était en mode portrait (1920 × 2560). Même objectif,
-  même échelle : elles sont recadrées sur la bande y 807-2560, qui correspond au cadrage paysage (1919 × 1753).
-  Les 16 images recadrées portent le commentaire JPEG `recadree-portrait` ; l'original n'est pas modifié.
-
-### 3. Mesurer les images : `standardisation.py` → `data_treatment/catalogue_images.csv`
-
-```bash
-.venv/bin/python data_treatment/standardisation.py
-```
-
-Lit les images (quelques secondes) et écrit les mesures : luminosité, contraste, netteté, pixels saturés,
-et surtout le **décalage de la caméra** par rapport à l'image de référence `2026-11-03-104512.jpg`, qui
-permet de ramener toutes les images dans le même repère (voir plus bas). Ne décide rien.
-
-### 4. Classer les images : `classification.py`
-
-```bash
-.venv/bin/python data_treatment/classification.py
-```
-
-Applique les seuils sur les mesures (période, visibilité, reflets, exploitable). Ne relit pas les images :
-instantané, on peut changer les seuils (en haut du script) et relancer. Ils ont été réglés en regardant
-des planches d'images.
-
-### Le catalogue `data_treatment/catalogue_images.csv`
-
-Une ligne par image. Le CSV est versionné (dans `data_treatment/`, à côté des scripts) pour partager les annotations.
-Relancer `standardisation.py` ou `classification.py` ne touche jamais aux colonnes manuelles
-(sauf `classification.py`, qui y reporte les fichiers d'annotation de l'étape 5).
-
-| Colonnes | Écrites par | Contenu |
-|---|---|---|
-| `fichier`, `datetime`, `jour`, `heure` | standardisation | identification ; **heures en UTC** (heure française = UTC + 1 ou + 2) |
-| `format` | standardisation | `paysage` / `recadree` (ancienne portrait) / `autre` |
-| `luminosite`, `contraste` | standardisation | gris moyen et écart-type de la bande utile (y 500-1200) |
-| `nettete` | standardisation | netteté de la zone fixe (mur + enrochement) |
-| `pct_sature` | standardisation | % de pixels blancs saturés (reflets, surexposition) |
-| `decalage_x`, `decalage_y`, `confiance_alignement` | standardisation | mouvement de la caméra par rapport à l'image de référence |
-| `periode` | classification | `jour` / `crepuscule` / `nuit` (d'après la luminosité) |
-| `visibilite` | classification | `nette` / `brumeuse` / `voilee` |
-| `reflets` | classification | 1 si `pct_sature` ≥ 2 % |
-| `exploitable` | classification | `non` = nuit ; `douteux` = voilée, brumeuse, reflets ou crépuscule (à trier à la main) ; `oui` sinon |
-| `niveau_px` | **manuel** | y de la frontière eau / berge d'en face (px, image d'origine) |
-| `classe_niveau` | **manuel** | `bas` / `moyen` / `haut` / `crue` (étape suivante) |
-| `verifie` | **manuel** | 1 = ligne vérifiée par un humain : `periode`, `visibilite`, `reflets`, `exploitable` ne sont plus recalculés |
-| `annotateur` | classification (depuis les fichiers d'annotation) | qui a annoté le niveau |
-| `commentaire` | **manuel** | texte libre |
-
-Bilan au 7 novembre : 3 901 images `oui`, 511 `douteux`, 1 115 `non` (nuits).
-
-**La caméra bouge.** Le décalage vertical de la scène est d'environ 20 px en juin et de 0 en novembre (dérive lente),
-et varie jusqu'à ~15 px au cours d'une journée de soleil (dilatation du support). Pas de zoom ni de rotation.
-Un niveau en pixels ne se compare donc d'une image à l'autre qu'après correction : **`niveau_px - decalage_y`**
-(`decalage_y` > 0 : la scène est plus bas que sur la référence).
-
-### 5. Annoter le niveau à la main : `define_water_lvl.py`
-
-Les jours sont répartis entre les trois annotateurs (jour de l'année modulo 3, environ 1 450 images chacun,
-sur toute la saison) : personne n'annote deux fois la même image. Chacun lance le script avec son nom :
-
-```bash
-.venv/bin/python data_treatment/define_water_lvl.py aymen                  # ou mathis, tristan
-.venv/bin/python data_treatment/define_water_lvl.py aymen --jour 2026-09   # seulement septembre
-.venv/bin/python data_treatment/define_water_lvl.py aymen --revoir         # inclut ses images déjà annotées
-```
-
-**Un clic enregistre** le niveau à la hauteur cliquée (frontière eau / berge d'en face, y moyen sur la largeur,
-comme dans le notebook 04) et passe directement à l'image suivante.
-
-| Touche | Action |
+| Dossier | Contenu |
 |---|---|
-| clic gauche | enregistre le niveau et passe à la suivante |
-| Entrée / `p` | enregistre la suggestion (pointillés jaunes : dernier niveau annoté, corrigé du mouvement de la caméra) |
-| `x` | rejette l'image (`exploitable = non`) et passe à la suivante |
-| → | passe sans rien enregistrer |
-| ← | revient à l'image précédente (ligne rouge = niveau enregistré ; recliquer pour corriger) |
-| `q` | quitter (tout est déjà enregistré ; au prochain lancement, reprise à la première image non annotée) |
+| [`niveau_eau/`](niveau_eau/) | les 3 modèles prêts à l'emploi (poids dans la [Release](https://github.com/MathisBorie/vision_romanche_level/releases/tag/modeles-v1)) |
+| [`etudes/`](etudes/) | approches mathématiques : POD, Fourier, PLS, produits scalaires, lignes de pixels, statistiques d'erreur |
+| [`apprentissage/`](apprentissage/) | réseaux entraînés : encodeurs (DINOv2, ConvNeXt, ResNet), SAM, CNN, comparaison de toutes les méthodes |
+| [`donnees/`](donnees/) | photos, annotation manuelle du niveau, découpage train / test |
+| [`rapport/`](rapport/) | rapport et diapositives |
 
-Chacun enregistre dans **son propre fichier** `data_treatment/annotations/niveau_<nom>.csv`
-(`fichier, niveau_px, exploitable, annote_le`) : pas de conflit git, chacun commite le sien.
-Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitable`, `verifie = 1`, `annotateur`) :
-
-```bash
-.venv/bin/python data_treatment/classification.py
-```
-
-### 6. Découper en train / test : `split_train_test.py` → `data_treatment/split_train_test.csv`
-
-```bash
-.venv/bin/python data_treatment/split_train_test.py                     # 4 semaines train, 1 semaine test
-.venv/bin/python data_treatment/split_train_test.py --train 2 --test 1  # autre rapport
-```
-
-- Découpage par **semaines entières** (lundi → dimanche, numérotées depuis la première semaine de la
-  saison) : cycles de 4 semaines en `train` puis 1 semaine en `test`. Les photos d'une même
-  semaine (même niveau, même lumière) ne se retrouvent jamais des deux côtés.
-- Porte sur **toutes les photos**, annotées ou non : le découpage ne change pas quand on annote, et une nouvelle
-  semaine de photos ne change pas les anciennes. Le catalogue n'est pas modifié.
-- Sorties :
-  - `data_treatment/split_train_test.csv` (`fichier, semaine, split`), versionné ;
-  - `data/dataset/training/` et `data/dataset/test/` : les images de chaque ensemble, en **liens physiques**
-    vers `data/images/` (pas d'espace disque en plus, `data/images/` n'est pas modifié). Les deux dossiers sont
-    vidés puis refaits à chaque lancement. Ne pas modifier ces images : c'est le même fichier que dans
-    `data/images/`. `--sans-dossiers` pour ne produire que le CSV.
-- Le script affiche le bilan.
-
-Bilan au 21 novembre (photos jusqu'au 7 novembre) :
-
-|  | photos | exploitables | annotées |
-|---|---|---|---|
-| train | 4 437 | 3 495 | 2 363 |
-| test | 1 090 | 883 | 552 |
-| % test | 19,7 % | 20,2 % | 18,9 % |
-
-Semaines de test : 22-28 juin, 31 août-6 septembre, 5-11 octobre. La semaine de test de fin juillet tombe dans le
-trou sans photos (9 juillet - 20 août) ; la suivante (9-15 novembre) apparaîtra en téléchargeant les nouvelles photos
-puis en relançant la chaîne (étapes 1 à 4 et 6).
-
-Étape suivante, une fois les images annotées : la classification du niveau (`classe_niveau`).
-
-## Encodeur : détection du niveau par réseau de neurones
-
-Dossier [`encodeur/`](encodeur/README.md) : un encodeur pré-entraîné (DINOv2, ConvNeXt ou ResNet-50 ;
-pas de Segment Anything) et une petite tête qui prédit la frontière eau / berge, entraînés sur les photos
-annotées et le découpage train / test de l'étape 6.
-
-```bash
-.venv/bin/python encodeur/entrainer.py --encodeur dinov2
-```
+Mathis Borie, Aymen Bouakkaz, Tristan Lymburner.
