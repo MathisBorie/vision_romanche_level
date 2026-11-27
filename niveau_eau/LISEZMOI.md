@@ -9,7 +9,16 @@ y = mesurer_niveau("photo.jpg", methode=3)   # méthode 1, 2 ou 3
 ```
 
 `y` est la hauteur de la frontière eau / berge d'en face, **en pixels depuis le haut de l'image**
-(plus `y` est petit, plus l'eau est haute). Aucun prétraitement à faire : la fonction recadre,
+(plus `y` est petit, plus l'eau est haute). Avec `en_metres=True`, la fonction renvoie la **hauteur d'eau
+en mètres** sur l'échelle de Simon :
+
+```python
+h = mesurer_niveau("photo.jpg", methode=3, en_metres=True)   # ex. 0.96 (m)
+```
+
+L'échelle (traits à 1,0 / 1,5 / 1,8 m relevés par Simon) est interpolée linéairement par morceaux, et
+prolongée au-delà des traits extrêmes (moins sûr). Le mouvement de la caméra (jusqu'à ~20 px, soit ~15 cm)
+est corrigé automatiquement par corrélation sur le mur (`decalage_camera`). Aucun prétraitement à faire : la fonction recadre,
 redimensionne et normalise elle-même. Elle accepte un chemin de fichier, une image PIL ou un tableau
 numpy RGB. La documentation complète s'affiche au survol de `mesurer_niveau` dans l'éditeur.
 
@@ -53,6 +62,7 @@ les suivants le réutilisent.
 | `niveau_eau.py` | la fonction `mesurer_niveau(image, methode)` |
 | `exemple.py`, `exemple.jpg` | exemple sur une photo du 22 juin (niveau annoté : 718 px) |
 | `requirements.txt` | dépendances |
+| `reference_cadrage.png` | zone du mur de la photo de référence, pour corriger le mouvement de la caméra |
 | `poids/sam2.1-hiera-small/` | SAM 2.1 de Meta (méthodes 1 et 2), 147 Mo |
 | `poids/sam_decodeur_affine.pt` | décodeur de SAM affiné (méthode 2), 16 Mo |
 | `poids/dinov2_niveau.pt` | DINOv2 + tête entraînée (méthode 3), 86 Mo |
