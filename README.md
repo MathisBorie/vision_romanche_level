@@ -2,6 +2,28 @@
 
 Projet de vision pour le niveau de la Romanche.
 
+## La Romanche en direct
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MathisBorie/vision_romanche_level/live/niveau_live.jpg" alt="Dernière photo de la caméra et niveau d'eau mesuré" width="720">
+</p>
+
+<p align="center">
+  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml/badge.svg" alt="État de la mise à jour"></a>
+  &nbsp;
+  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://img.shields.io/badge/%E2%86%BB-relancer%20%2F%20r%C3%A9activer-2ea44f" alt="Relancer ou réactiver la mise à jour"></a>
+  &nbsp;
+  <a href="https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv"><img src="https://img.shields.io/badge/historique-CSV-blue" alt="Historique des mesures"></a>
+</p>
+
+Dernière photo de la caméra (mise à jour toutes les 15 min, avec 15 à 30 min de retard), avec le niveau
+d'eau mesuré par DINOv2 (ligne rouge, en pixels depuis le haut de l'image : plus petit = eau plus haute).
+Si l'image n'avance plus : bouton **relancer / réactiver**, puis *Enable workflow* (si GitHub a mis la
+tâche en pause) ou *Run workflow* (mise à jour immédiate).
+
+Mesurer le niveau sur n'importe quelle photo : [`niveau_eau/`](niveau_eau/LISEZMOI.md)
+(`mesurer_niveau(image, methode)`, 3 méthodes, poids téléchargés automatiquement).
+
 ## Accès aux images (bucket S3)
 
 Les photos de la caméra sont dans le bucket AWS S3 `romanche-mathis` (région `us-east-2`),
