@@ -1,0 +1,23 @@
+{
+ "methode": "DINOv2 ViT-S gelé + tête entraînée",
+ "Aymen": {
+  "moyenne": 5.89,
+  "mediane": 5.2,
+  "max": 23.2,
+  "biais": -0.73,
+  "a5": 48.9,
+  "a10": 82.7,
+  "a20": 99.9
+ },
+ "livraison": {
+  "moyenne": 6.2,
+  "mediane": 5.3,
+  "max": 24.9,
+  "biais": -2.08,
+  "a5": 47.7,
+  "a10": 78.9,
+  "a20": 99.9
+ },
+ "ecart_moyen_entre_predictions_px": 1.8,
+ "duree_s": 281
+}

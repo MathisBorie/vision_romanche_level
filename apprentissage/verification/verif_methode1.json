@@ -1,0 +1,23 @@
+{
+ "methode": "SAM 2.1 sans entraînement (zéro-shot)",
+ "Aymen": {
+  "moyenne": 8.86,
+  "mediane": 7.0,
+  "max": 574.0,
+  "biais": 5.56,
+  "a5": 42.2,
+  "a10": 71.1,
+  "a20": 94.9
+ },
+ "livraison": {
+  "moyenne": 8.87,
+  "mediane": 7.0,
+  "max": 574.0,
+  "biais": 5.56,
+  "a5": 42.1,
+  "a10": 71.1,
+  "a20": 95.0
+ },
+ "ecart_moyen_entre_predictions_px": 0.01,
+ "duree_s": 1090
+}
