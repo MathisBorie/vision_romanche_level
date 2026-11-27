@@ -7,11 +7,10 @@ Lancé toutes les 15 min par .github/workflows/niveau_live.yml (GitHub Actions) 
 
 SORTIE est le dossier de la branche `live` (une seule image, écrasée à chaque fois) :
     niveau_live.jpg   photo annotée affichée en haut du README (un trait par modèle, repères 1,0 / 1,5 / 1,8 m)
-    niveau_live.json  dernière mesure (fichier du bucket, date, niveau)
+    niveau_live.json  dernière mesure (photo, date, niveau)
     historique.csv    toutes les mesures depuis la mise en route
 
-Identifiants du bucket : variables d'environnement S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID,
-AWS_SECRET_ACCESS_KEY (secrets GitHub du dépôt), comme bucket.py.
+Source des photos : l'API publique du site de la caméra (SOURCE ci-dessous), sans identifiants.
 """
 from __future__ import annotations
 
@@ -19,41 +18,32 @@ import argparse
 import io
 import json
 import os
-import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import boto3
+import urllib.request
 
 ROOT = next(p for p in Path(__file__).resolve().parents if (p / "niveau_eau").is_dir())
-CAMERA = "romanche-01/"
+SOURCE = "https://romanche.simon-duchene.workers.dev"   # site de la caméra (photos toutes les 30 min, de jour)
 HEURE_LOCALE = ZoneInfo("Europe/Paris")         # la caméra est à Livet (Isère)
-MOTIF = re.compile(r"(\d{4})/(\d{2})/(\d{2})/(\d{6})_[^/]*\.jpe?g$", re.IGNORECASE)
 
 
-def client():
-    return boto3.client("s3", region_name=os.getenv("AWS_REGION") or None,
-                        endpoint_url=os.getenv("S3_ENDPOINT_URL") or None)
+def telecharger(chemin: str) -> bytes:
+    req = urllib.request.Request(SOURCE + chemin, headers={"User-Agent": "niveau-romanche-live"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read()
 
 
-def derniere_photo(s3, bucket: str) -> str | None:
-    """Clé de la photo la plus récente (cherche dans le mois en cours puis les précédents)."""
-    mois = datetime.now(timezone.utc).replace(day=1)
-    for _ in range(12):
-        prefixe = f"{CAMERA}{mois:%Y/%m}/"
-        cles = [o["Key"] for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=prefixe)
-                for o in page.get("Contents", []) if MOTIF.search(o["Key"])]
-        if cles:
-            return max(cles, key=lambda k: MOTIF.search(k).groups())
-        mois = (mois - timedelta(days=1)).replace(day=1)
-    return None
-
-
-def date_prise(cle: str) -> datetime:
-    a, m, j, hms = MOTIF.search(cle).groups()
-    return datetime.strptime(f"{a}{m}{j}{hms}", "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
+def derniere_photo() -> dict | None:
+    """Dernière photo publiée : {"cle", "img", "prise"} (cle = identifiant unique de la photo)."""
+    items = json.loads(telecharger("/api/captures?limit=1")).get("items", [])
+    if not items:
+        return None
+    it = items[0]
+    prise = datetime.fromisoformat(it["captured_at"].replace("Z", "+00:00"))
+    return {"cle": it["img"].rsplit("/", 1)[-1], "img": it["img"], "prise": prise}
 
 
 #: (méthode, nom court, couleur du trait), du plus précis au moins précis
@@ -117,10 +107,10 @@ def main():
     etat_f = a.sortie / "niveau_live.json"
     etat = json.loads(etat_f.read_text()) if etat_f.exists() else {}
 
-    s3, bucket = client(), os.environ["S3_BUCKET"]
-    cle = derniere_photo(s3, bucket)
-    if cle is None:
-        sys.exit("aucune photo dans le bucket")
+    photo_api = derniere_photo()
+    if photo_api is None:
+        sys.exit("aucune photo publiée")
+    cle = photo_api["cle"]
     nouvelle = a.forcer or cle != etat.get("cle")
     print(f"dernière photo : {cle} ({'nouvelle' if nouvelle else 'déjà traitée'})")
     if a.verifier:
@@ -135,7 +125,7 @@ def main():
     sys.path.insert(0, str(ROOT / "niveau_eau"))
     import niveau_eau as ne
 
-    brut = s3.get_object(Bucket=bucket, Key=cle)["Body"].read()
+    brut = telecharger(photo_api["img"])
     ouvrir = lambda: Image.open(io.BytesIO(brut))
     photo, retrait = ouvrir(), 0
     if photo.size == (1920, 2560):                           # ancien mode portrait : même cadrage que le modèle
@@ -147,7 +137,7 @@ def main():
         mesures.append({"methode": methode, "nom": nom, "couleur": couleur, "niveau_px": y,
                         "hauteur_m": ne.en_metres_depuis_px(y - decalage)})
         print(f"  {nom:11s} {mesures[-1]['hauteur_m']:.2f} m  ({y:.1f} px)", flush=True)
-    quand = date_prise(cle)
+    quand = photo_api["prise"]
     dessiner(photo, mesures, quand, decalage, ne.ECHELLE).save(a.sortie / "niveau_live.jpg", quality=85)
 
     etat = {"cle": cle, "prise_utc": quand.isoformat(), "decalage_camera_px": round(decalage, 1),
