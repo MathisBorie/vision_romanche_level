@@ -55,7 +55,7 @@ jobs:
         if: steps.verif.outputs.nouvelle == 'true'
         run: |
           pip install --quiet torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install --quiet timm pillow numpy
+          pip install --quiet timm pillow numpy opencv-python-headless
 
       - name: Mesurer et dessiner
         if: steps.verif.outputs.nouvelle == 'true'
