@@ -1,0 +1,23 @@
+{
+ "methode": "SAM 2.1, décodeur affiné sur nos annotations",
+ "Aymen": {
+  "moyenne": 6.49,
+  "mediane": 6.0,
+  "max": 27.6,
+  "biais": -2.46,
+  "a5": 44.3,
+  "a10": 77.9,
+  "a20": 99.4
+ },
+ "livraison": {
+  "moyenne": 6.52,
+  "mediane": 6.0,
+  "max": 28.1,
+  "biais": -2.43,
+  "a5": 43.7,
+  "a10": 77.3,
+  "a20": 99.4
+ },
+ "ecart_moyen_entre_predictions_px": 1.12,
+ "duree_s": 954
+}

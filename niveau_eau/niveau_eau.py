@@ -176,7 +176,7 @@ def decalage_camera(image: ImageEntree, _jpeg: bool | None = None) -> float:
     """Décalage vertical de la caméra (px) par rapport au cadrage de référence.
 
     La caméra dérive (~20 px entre juin et novembre) et bouge avec le soleil (~15 px dans la journée).
-    On le mesure comme ``data_treatment/standardisation.py`` : corrélation de phase sur la zone fixe
+    On le mesure comme ``donnees/standardisation.py`` : corrélation de phase sur la zone fixe
     (mur + enrochement, y < 800) à 1/4 de résolution. ``decalage_y > 0`` : la scène est plus bas que
     sur la référence. Renvoie 0 si l'image est trop sombre pour s'aligner (nuit).
 

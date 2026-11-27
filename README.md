@@ -62,7 +62,7 @@ Au 7 novembre : 5 527 images (2,7 Go) du 29 mai au 7 novembre 2026, dans `data/r
 ### 2. Rassembler les images dans un seul dossier : `restructure.py`
 
 ```bash
-.venv/bin/python data_treatment/restructure.py
+.venv/bin/python donnees/restructure.py
 ```
 
 - `data/raw/romanche-01/2026/11/06/104512_02821fd2_s.jpg` → `data/images/2026-11-06-104512.jpg`
@@ -71,10 +71,10 @@ Au 7 novembre : 5 527 images (2,7 Go) du 29 mai au 7 novembre 2026, dans `data/r
   même échelle : elles sont recadrées sur la bande y 807-2560, qui correspond au cadrage paysage (1919 × 1753).
   Les 16 images recadrées portent le commentaire JPEG `recadree-portrait` ; l'original n'est pas modifié.
 
-### 3. Mesurer les images : `standardisation.py` → `data_treatment/catalogue_images.csv`
+### 3. Mesurer les images : `standardisation.py` → `donnees/catalogue_images.csv`
 
 ```bash
-.venv/bin/python data_treatment/standardisation.py
+.venv/bin/python donnees/standardisation.py
 ```
 
 Lit les images (quelques secondes) et écrit les mesures : luminosité, contraste, netteté, pixels saturés,
@@ -84,16 +84,16 @@ permet de ramener toutes les images dans le même repère (voir plus bas). Ne d�
 ### 4. Classer les images : `classification.py`
 
 ```bash
-.venv/bin/python data_treatment/classification.py
+.venv/bin/python donnees/classification.py
 ```
 
 Applique les seuils sur les mesures (période, visibilité, reflets, exploitable). Ne relit pas les images :
 instantané, on peut changer les seuils (en haut du script) et relancer. Ils ont été réglés en regardant
 des planches d'images.
 
-### Le catalogue `data_treatment/catalogue_images.csv`
+### Le catalogue `donnees/catalogue_images.csv`
 
-Une ligne par image. Le CSV est versionné (dans `data_treatment/`, à côté des scripts) pour partager les annotations.
+Une ligne par image. Le CSV est versionné (dans `donnees/`, à côté des scripts) pour partager les annotations.
 Relancer `standardisation.py` ou `classification.py` ne touche jamais aux colonnes manuelles
 (sauf `classification.py`, qui y reporte les fichiers d'annotation de l'étape 5).
 
@@ -128,9 +128,9 @@ Les jours sont répartis entre les trois annotateurs (jour de l'année modulo 3,
 sur toute la saison) : personne n'annote deux fois la même image. Chacun lance le script avec son nom :
 
 ```bash
-.venv/bin/python data_treatment/define_water_lvl.py aymen                  # ou mathis, tristan
-.venv/bin/python data_treatment/define_water_lvl.py aymen --jour 2026-09   # seulement septembre
-.venv/bin/python data_treatment/define_water_lvl.py aymen --revoir         # inclut ses images déjà annotées
+.venv/bin/python donnees/define_water_lvl.py aymen                  # ou mathis, tristan
+.venv/bin/python donnees/define_water_lvl.py aymen --jour 2026-09   # seulement septembre
+.venv/bin/python donnees/define_water_lvl.py aymen --revoir         # inclut ses images déjà annotées
 ```
 
 **Un clic enregistre** le niveau à la hauteur cliquée (frontière eau / berge d'en face, y moyen sur la largeur,
@@ -145,19 +145,19 @@ comme dans le notebook 04) et passe directement à l'image suivante.
 | ← | revient à l'image précédente (ligne rouge = niveau enregistré ; recliquer pour corriger) |
 | `q` | quitter (tout est déjà enregistré ; au prochain lancement, reprise à la première image non annotée) |
 
-Chacun enregistre dans **son propre fichier** `data_treatment/annotations/niveau_<nom>.csv`
+Chacun enregistre dans **son propre fichier** `donnees/annotations/niveau_<nom>.csv`
 (`fichier, niveau_px, exploitable, annote_le`) : pas de conflit git, chacun commite le sien.
 Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitable`, `verifie = 1`, `annotateur`) :
 
 ```bash
-.venv/bin/python data_treatment/classification.py
+.venv/bin/python donnees/classification.py
 ```
 
-### 6. Découper en train / test : `split_train_test.py` → `data_treatment/split_train_test.csv`
+### 6. Découper en train / test : `split_train_test.py` → `donnees/split_train_test.csv`
 
 ```bash
-.venv/bin/python data_treatment/split_train_test.py                     # 4 semaines train, 1 semaine test
-.venv/bin/python data_treatment/split_train_test.py --train 2 --test 1  # autre rapport
+.venv/bin/python donnees/split_train_test.py                     # 4 semaines train, 1 semaine test
+.venv/bin/python donnees/split_train_test.py --train 2 --test 1  # autre rapport
 ```
 
 - Découpage par **semaines entières** (lundi → dimanche, numérotées depuis la première semaine de la
@@ -166,7 +166,7 @@ Pour reporter toutes les annotations dans le catalogue (`niveau_px`, `exploitabl
 - Porte sur **toutes les photos**, annotées ou non : le découpage ne change pas quand on annote, et une nouvelle
   semaine de photos ne change pas les anciennes. Le catalogue n'est pas modifié.
 - Sorties :
-  - `data_treatment/split_train_test.csv` (`fichier, semaine, split`), versionné ;
+  - `donnees/split_train_test.csv` (`fichier, semaine, split`), versionné ;
   - `data/dataset/training/` et `data/dataset/test/` : les images de chaque ensemble, en **liens physiques**
     vers `data/images/` (pas d'espace disque en plus, `data/images/` n'est pas modifié). Les deux dossiers sont
     vidés puis refaits à chaque lancement. Ne pas modifier ces images : c'est le même fichier que dans
