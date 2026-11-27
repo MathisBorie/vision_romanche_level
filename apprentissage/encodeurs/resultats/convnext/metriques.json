@@ -1,0 +1,47 @@
+{
+  "encodeur": "convnext",
+  "modele_timm": "convnext_tiny.fb_in22k_ft_in1k",
+  "meilleure_epoque": 2,
+  "val": {
+    "n": 841,
+    "erreur_moyenne_px": 7.51,
+    "erreur_mediane_px": 6.9,
+    "erreur_max_px": 35.3,
+    "a_5px_pct": 36.1,
+    "a_10px_pct": 69.4,
+    "a_20px_pct": 98.6
+  },
+  "test": {
+    "n": 883,
+    "erreur_moyenne_px": 6.49,
+    "erreur_mediane_px": 5.9,
+    "erreur_max_px": 25.1,
+    "a_5px_pct": 43.4,
+    "a_10px_pct": 76.9,
+    "a_20px_pct": 99.9
+  },
+  "test_reference_naive": {
+    "n": 883,
+    "erreur_moyenne_px": 47.39,
+    "erreur_mediane_px": 43.43,
+    "erreur_max_px": 197.6,
+    "a_5px_pct": 0.1,
+    "a_10px_pct": 1.2,
+    "a_20px_pct": 8.6
+  },
+  "parametres": {
+    "encodeur": "convnext",
+    "epoques": 20,
+    "lot": 16,
+    "lr": 0.001,
+    "lr_encodeur": 5e-05,
+    "workers": 8,
+    "limite": 0,
+    "graine": 0,
+    "photos": {
+      "train": 2652,
+      "val": 841,
+      "test": 883
+    }
+  }
+}

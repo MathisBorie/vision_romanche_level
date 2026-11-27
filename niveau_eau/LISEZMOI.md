@@ -10,13 +10,13 @@ y = mesurer_niveau("photo.jpg", methode=3)   # méthode 1, 2 ou 3
 
 `y` est la hauteur de la frontière eau / berge d'en face, **en pixels depuis le haut de l'image**
 (plus `y` est petit, plus l'eau est haute). Avec `en_metres=True`, la fonction renvoie la **hauteur d'eau
-en mètres** sur l'échelle de Simon :
+en mètres** sur une échelle relevée sur le terrain :
 
 ```python
 h = mesurer_niveau("photo.jpg", methode=3, en_metres=True)   # ex. 0.96 (m)
 ```
 
-L'échelle (traits à 1,0 / 1,5 / 1,8 m relevés par Simon) est interpolée linéairement par morceaux, et
+L'échelle (repères à 1,0 / 1,5 / 1,8 m) est interpolée linéairement par morceaux, et
 prolongée au-delà des traits extrêmes (moins sûr). Le mouvement de la caméra (jusqu'à ~20 px, soit ~15 cm)
 est corrigé automatiquement par corrélation sur le mur (`decalage_camera`). Aucun prétraitement à faire : la fonction recadre,
 redimensionne et normalise elle-même. Elle accepte un chemin de fichier, une image PIL ou un tableau

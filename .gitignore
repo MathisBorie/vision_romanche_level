@@ -37,3 +37,6 @@ exports/
 
 # Poids des modèles (téléchargés depuis la Release GitHub)
 niveau_eau/poids
+
+# Figures générées pour les diapositives
+rapport/diapos/figures/

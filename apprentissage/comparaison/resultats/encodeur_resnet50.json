@@ -1,0 +1,23 @@
+{
+  "cle": "encodeur_resnet50",
+  "categorie": "Encodeurs pré-entraînés",
+  "methode": "ResNet-50 (affiné)",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 6.31,
+    "erreur_mediane": 5.3,
+    "erreur_max": 23.0,
+    "biais": 0.77,
+    "a5": 47.3,
+    "a10": 77.9,
+    "a20": 99.4
+  },
+  "sans_prediction": 0,
+  "apprentissage": "5 époques",
+  "duree_entrainement_s": 747.1,
+  "machine_entrainement": "RTX 3080 Ti",
+  "temps_image_ms": 30.8,
+  "machine_image": "RTX 3080 Ti",
+  "temps_preparation_ms": 18.1,
+  "temps_reseau_ms": 12.7
+}

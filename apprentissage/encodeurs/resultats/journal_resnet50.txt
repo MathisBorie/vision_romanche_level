@@ -1,0 +1,26 @@
+resnet50 (resnet50.a1_in1k) sur cuda | train 2652 photos / 12 semaines, val 841 photos / 4 semaines, test 883 photos / 3 semaines
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+référence naïve (niveau moyen de train) sur test : erreur moyenne 47.39 px
+époque  1/20  perte train  18.09 px | val : moyenne   9.05 px, médiane  8.20 px  (37 s)
+époque  2/20  perte train   5.37 px | val : moyenne   8.18 px, médiane  7.50 px  (35 s)
+époque  3/20  perte train   5.08 px | val : moyenne   8.21 px, médiane  7.40 px  (33 s)
+époque  4/20  perte train   4.75 px | val : moyenne   8.61 px, médiane  7.80 px  (35 s)
+époque  5/20  perte train   4.53 px | val : moyenne   7.55 px, médiane  6.90 px  (35 s)
+époque  6/20  perte train   4.41 px | val : moyenne   8.05 px, médiane  7.50 px  (35 s)
+époque  7/20  perte train   4.29 px | val : moyenne   8.99 px, médiane  8.00 px  (35 s)
+époque  8/20  perte train   4.23 px | val : moyenne   9.24 px, médiane  8.30 px  (35 s)
+époque  9/20  perte train   4.01 px | val : moyenne   8.66 px, médiane  7.80 px  (35 s)
+époque 10/20  perte train   3.88 px | val : moyenne   9.07 px, médiane  8.10 px  (34 s)
+époque 11/20  perte train   3.72 px | val : moyenne   8.27 px, médiane  7.20 px  (35 s)
+époque 12/20  perte train   3.58 px | val : moyenne   8.75 px, médiane  7.80 px  (35 s)
+époque 13/20  perte train   3.47 px | val : moyenne   9.11 px, médiane  8.20 px  (35 s)
+époque 14/20  perte train   3.40 px | val : moyenne   9.14 px, médiane  8.00 px  (35 s)
+époque 15/20  perte train   3.39 px | val : moyenne   8.82 px, médiane  7.80 px  (35 s)
+époque 16/20  perte train   3.31 px | val : moyenne   8.94 px, médiane  8.10 px  (35 s)
+époque 17/20  perte train   3.31 px | val : moyenne   9.00 px, médiane  8.10 px  (35 s)
+époque 18/20  perte train   3.21 px | val : moyenne   8.83 px, médiane  7.90 px  (33 s)
+époque 19/20  perte train   3.14 px | val : moyenne   8.98 px, médiane  7.90 px  (35 s)
+époque 20/20  perte train   3.09 px | val : moyenne   8.99 px, médiane  7.90 px  (35 s)
+
+TEST (883 photos, époque 5) : erreur moyenne 6.31 px, médiane 5.3 px, max 23.0 px | 47.3 % à 5 px, 77.9 % à 10 px, 99.4 % à 20 px
+Résultats dans encodeur/resultats/resnet50/

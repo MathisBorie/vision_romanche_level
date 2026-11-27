@@ -1,0 +1,23 @@
+{
+  "cle": "encodeur_convnext",
+  "categorie": "Encodeurs pré-entraînés",
+  "methode": "ConvNeXt-Tiny (affiné)",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 6.49,
+    "erreur_mediane": 5.9,
+    "erreur_max": 25.1,
+    "biais": -1.96,
+    "a5": 43.4,
+    "a10": 76.9,
+    "a20": 99.9
+  },
+  "sans_prediction": 0,
+  "apprentissage": "2 époques",
+  "duree_entrainement_s": 740.5,
+  "machine_entrainement": "RTX 3080 Ti",
+  "temps_image_ms": 30.6,
+  "machine_image": "RTX 3080 Ti",
+  "temps_preparation_ms": 17.7,
+  "temps_reseau_ms": 12.9
+}
