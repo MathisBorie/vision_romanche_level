@@ -49,13 +49,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: niveau_eau/poids
-          key: poids-modeles-v1
+          key: poids-modeles-v1-sam-dinov2
 
-      - name: Installer PyTorch (CPU) et timm
+      - name: Installer PyTorch (CPU), timm et transformers
         if: steps.verif.outputs.nouvelle == 'true'
         run: |
           pip install --quiet torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install --quiet timm pillow numpy opencv-python-headless
+          pip install --quiet timm transformers pandas pillow numpy opencv-python-headless
 
       - name: Mesurer et dessiner
         if: steps.verif.outputs.nouvelle == 'true'
