@@ -1,6 +1,6 @@
 """Frise chronologique du découpage entraînement / test (photos exploitables par semaine).
 
-    .venv/bin/python presentation/figures_split.py
+    .venv/bin/python rapport/diapos/figures_split.py
 """
 from pathlib import Path
 import numpy as np, pandas as pd

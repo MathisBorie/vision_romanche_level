@@ -1,7 +1,7 @@
 """Deuxième exemple de reconstruction POD : une photo test en eau haute.
 Mêmes diapos que l'exemple 1 (photo, puis reconstruction avec 1, 4, 16, 64, 256 modes).
 
-    .venv/bin/python presentation/exemple_eau_haute.py   ->  presentation/reconstruction_eau_haute.pptx
+    .venv/bin/python rapport/diapos/exemple_eau_haute.py   ->  rapport/diapos/reconstruction_eau_haute.pptx
 """
 import glob, math
 from concurrent.futures import ThreadPoolExecutor

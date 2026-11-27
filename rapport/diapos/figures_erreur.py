@@ -1,6 +1,6 @@
 """Diapo « répartition de l'erreur » : POD + réseau (K = 750), photos test.
 
-    .venv/bin/python presentation/figures_erreur.py
+    .venv/bin/python rapport/diapos/figures_erreur.py
 """
 import glob
 from pathlib import Path

@@ -1,7 +1,7 @@
 """Diapos de reconstruction POD avec trois photos test côte à côte : eau haute, niveau moyen, eau basse.
 Utilise les figures de figures_pod.py (préfixe 4_) exemple_eau_haute.py (8_) et exemple_eau_basse.py (9_).
 
-    .venv/bin/python presentation/creer_trois_exemples.py  ->  presentation/reconstruction_trois_exemples.pptx
+    .venv/bin/python rapport/diapos/creer_trois_exemples.py  ->  rapport/diapos/reconstruction_trois_exemples.pptx
 """
 import math
 from pathlib import Path

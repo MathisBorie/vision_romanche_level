@@ -1,6 +1,6 @@
 """Diapos d'introduction (contexte + sommaire), dans le style de la présentation de l'équipe.
 
-    .venv/bin/python presentation/creer_intro.py
+    .venv/bin/python rapport/diapos/creer_intro.py
 """
 from pathlib import Path
 from pptx import Presentation

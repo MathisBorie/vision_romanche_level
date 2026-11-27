@@ -2,7 +2,7 @@
 
 Valeurs : sorties du notebook 06 (POD noir et blanc à 1/4, 3 493 photos train annotées, 883 photos test,
 réseau (64, 32) moyenné sur 3 graines, régression ridge).
-    .venv/bin/python presentation/figures_K.py
+    .venv/bin/python rapport/diapos/figures_K.py
 """
 from pathlib import Path
 import numpy as np
