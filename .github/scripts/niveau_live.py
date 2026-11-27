@@ -2,8 +2,8 @@
 
 Lancé toutes les 15 min par .github/workflows/niveau_live.yml (GitHub Actions) :
 
-    python live/mettre_a_jour.py --verifier SORTIE   # écrit nouvelle=true/false dans $GITHUB_OUTPUT
-    python live/mettre_a_jour.py SORTIE              # télécharge, mesure, dessine
+    python .github/scripts/niveau_live.py --verifier SORTIE   # écrit nouvelle=true/false dans $GITHUB_OUTPUT
+    python .github/scripts/niveau_live.py SORTIE              # télécharge, mesure, dessine
 
 SORTIE est le dossier de la branche `live` (une seule image, écrasée à chaque fois) :
     niveau_live.jpg   photo annotée affichée en haut du README (un trait par modèle, repères 1,0 / 1,5 / 1,8 m)
@@ -27,7 +27,7 @@ from zoneinfo import ZoneInfo
 
 import boto3
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = next(p for p in Path(__file__).resolve().parents if (p / "niveau_eau").is_dir())
 CAMERA = "romanche-01/"
 HEURE_LOCALE = ZoneInfo("Europe/Paris")         # la caméra est à Livet (Isère)
 MOTIF = re.compile(r"(\d{4})/(\d{2})/(\d{2})/(\d{6})_[^/]*\.jpe?g$", re.IGNORECASE)
