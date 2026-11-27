@@ -1,6 +1,6 @@
 """Figures de la diapo « prétraitement » (découpe, réduction, noir et blanc, normalisation).
 
-    .venv/bin/python presentation/figures_pretraitement.py
+    .venv/bin/python rapport/diapos/figures_pretraitement.py
 """
 from pathlib import Path
 import numpy as np, pandas as pd

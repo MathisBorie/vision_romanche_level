@@ -50,13 +50,13 @@ repérer la rangée où l'image passe de « berge » à « eau ». Perte : smoot
 Installation (une fois) : `.venv/bin/pip install torch torchvision timm` (GPU conseillé ; testé sur RTX 3080 Ti).
 
 ```bash
-.venv/bin/python encodeur/entrainer.py --encodeur dinov2                          # ~15 min sur GPU
-.venv/bin/python encodeur/entrainer.py --encodeur convnext
-.venv/bin/python encodeur/entrainer.py --encodeur resnet50
-.venv/bin/python encodeur/entrainer.py --encodeur dinov2 --limite 64 --epoques 1  # essai rapide
+.venv/bin/python apprentissage/encodeurs/entrainer.py --encodeur dinov2                          # ~15 min sur GPU
+.venv/bin/python apprentissage/encodeurs/entrainer.py --encodeur convnext
+.venv/bin/python apprentissage/encodeurs/entrainer.py --encodeur resnet50
+.venv/bin/python apprentissage/encodeurs/entrainer.py --encodeur dinov2 --limite 64 --epoques 1  # essai rapide
 ```
 
-Résultats dans `encodeur/resultats/<encodeur>/` :
+Résultats dans `apprentissage/encodeurs/resultats/<encodeur>/` :
 `metriques.json` (erreurs val / test, référence naïve), `historique.csv` (par époque),
 `predictions_test.csv` (`fichier, niveau_px, prediction_px, erreur_px`), `modele.pt` (poids, ignoré par git).
 

@@ -1,6 +1,6 @@
 """Figures de la partie POD de la présentation (POD noir et blanc du notebook 06).
 
-    .venv/bin/python presentation/figures_pod.py
+    .venv/bin/python rapport/diapos/figures_pod.py
 """
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path

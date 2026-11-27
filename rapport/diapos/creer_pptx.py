@@ -1,7 +1,7 @@
-"""Construit presentation/partie_POD.pptx à partir des figures de presentation/figures/.
+"""Construit rapport/diapos/partie_POD.pptx à partir des figures de rapport/diapos/figures/.
 
-    .venv/bin/python presentation/figures_pod.py   # figures
-    .venv/bin/python presentation/creer_pptx.py    # diapos
+    .venv/bin/python rapport/diapos/figures_pod.py   # figures
+    .venv/bin/python rapport/diapos/creer_pptx.py    # diapos
 """
 from pathlib import Path
 import pandas as pd
