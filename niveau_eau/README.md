@@ -10,8 +10,16 @@ mesurer_niveau("photo.jpg", en_metres=True)    # hauteur d'eau en m
 mesurer_niveau("photo.jpg", methode=1)         # 1 = SAM brut, 2 = SAM affiné, 3 = DINOv2
 ```
 
-Installation : `pip install -r requirements.txt`. Les poids (250 Mo) se téléchargent tout seuls au premier
-appel depuis la [Release](https://github.com/MathisBorie/vision_romanche_level/releases/tag/modeles-v1).
+Installation :
+
+```bash
+git clone https://github.com/MathisBorie/vision_romanche_level.git    # ou Code → Download ZIP
+cd vision_romanche_level/niveau_eau
+pip install -r requirements.txt
+```
+
+Les poids (250 Mo) se téléchargent tout seuls au premier appel depuis la
+[Release](https://github.com/MathisBorie/vision_romanche_level/releases/tag/modeles-v1).
 
 | `methode` | Modèle | Erreur moyenne | Pire cas | À 10 px près | À 20 px près |
 |---|---|---|---|---|---|
