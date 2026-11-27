@@ -34,3 +34,6 @@ exports/
 .vscode/
 .idea/
 !.env.example
+
+# Poids des modèles (téléchargés depuis la Release GitHub)
+niveau_eau/poids
