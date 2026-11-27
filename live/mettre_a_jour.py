@@ -1,4 +1,4 @@
-"""Image « en direct » de la page d'accueil : dernière photo de la caméra + niveau d'eau mesuré par DINOv2.
+"""Image « en direct » de la page d'accueil : dernière photo de la caméra + niveau d'eau des 3 modèles.
 
 Lancé toutes les 15 min par .github/workflows/niveau_live.yml (GitHub Actions) :
 
@@ -6,7 +6,7 @@ Lancé toutes les 15 min par .github/workflows/niveau_live.yml (GitHub Actions) 
     python live/mettre_a_jour.py SORTIE              # télécharge, mesure, dessine
 
 SORTIE est le dossier de la branche `live` (une seule image, écrasée à chaque fois) :
-    niveau_live.jpg   photo annotée affichée en haut du README (échelle 1,0 / 1,5 / 1,8 m de Simon)
+    niveau_live.jpg   photo annotée affichée en haut du README (un trait par modèle, repères 1,0 / 1,5 / 1,8 m)
     niveau_live.json  dernière mesure (fichier du bucket, date, niveau)
     historique.csv    toutes les mesures depuis la mise en route
 
@@ -56,47 +56,54 @@ def date_prise(cle: str) -> datetime:
     return datetime.strptime(f"{a}{m}{j}{hms}", "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
 
 
-def dessiner(photo, y: float, quand: datetime, metres: float, decalage: float, echelle):
-    """Photo réduite, échelle de Simon, ligne du niveau mesuré et bandeau avec la date et la valeur."""
-    from PIL import Image, ImageDraw, ImageFont
+#: (méthode, nom court, couleur du trait), du plus précis au moins précis
+MODELES = [(3, "DINOv2", (40, 220, 90)), (2, "SAM affiné", (40, 140, 255)), (1, "SAM brut", (255, 50, 50))]
 
-    def police(t):
-        for f in ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",     # Ubuntu (GitHub Actions)
-                  "/System/Library/Fonts/Supplemental/Arial.ttf", "DejaVuSans.ttf"):
-            try:
-                return ImageFont.truetype(f, t)
-            except OSError:
-                pass
-        return ImageFont.load_default(size=t)
 
+def police(t):
+    from PIL import ImageFont
+    for f in ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",          # Ubuntu (GitHub Actions)
+              "/System/Library/Fonts/Supplemental/Arial.ttf", "DejaVuSans.ttf"):
+        try:
+            return ImageFont.truetype(f, t)
+        except OSError:
+            pass
+    return ImageFont.load_default(size=t)
+
+
+def dessiner(photo, mesures: list[dict], quand: datetime, decalage: float, echelle):
+    """Photo réduite, repères en mètres, un trait par modèle, date en haut et hauteurs en bas."""
+    from PIL import Image, ImageDraw
     k = 960 / photo.width
     im = photo.convert("RGB").resize((960, round(photo.height * k)), Image.LANCZOS)
     d = ImageDraw.Draw(im)
-    couleurs = {1.8: (60, 210, 110), 1.5: (245, 170, 40), 1.0: (240, 80, 80)}
-    for y_ref, h in echelle:                                 # traits de Simon, recalés sur la caméra
+    for y_ref, h in echelle:                                 # repères 1,0 / 1,5 / 1,8 m, recalés sur la caméra
         ye = (y_ref + decalage) * k
-        for x in range(0, im.width - 70, 16):
-            d.line([(x, ye), (x + 9, ye)], fill=couleurs.get(h, (200, 200, 200)), width=2)
-        d.rounded_rectangle([im.width - 64, ye - 11, im.width - 6, ye + 11], 4, fill=(20, 24, 32))
-        d.text((im.width - 35, ye), f"{h:.1f} m".replace(".", ","), fill=couleurs.get(h, (200, 200, 200)), anchor="mm",
-               font=police(15))
-    yy = y * k
-    for e, c in ((6, (0, 0, 0)), (4, (60, 160, 255))):
-        d.line([(0, yy), (im.width - 70, yy)], fill=c, width=e)
+        for x in range(0, im.width - 62, 14):
+            d.line([(x, ye), (x + 7, ye)], fill=(255, 255, 255), width=1)
+        d.text((im.width - 8, ye), f"{h:.1f} m".replace(".", ","), fill=(255, 255, 255), anchor="rm",
+               font=police(15), stroke_width=2, stroke_fill=(0, 0, 0))
+    for m in reversed(mesures):                              # le plus précis dessiné en dernier (au-dessus)
+        yy = m["niveau_px"] * k
+        d.line([(0, yy), (im.width - 62, yy)], fill=(0, 0, 0), width=5)
+        d.line([(0, yy), (im.width - 62, yy)], fill=m["couleur"], width=3)
 
-
-    local = quand.astimezone(HEURE_LOCALE)
-    d.text((12, yy - 36), f"eau : {metres:.2f} m".replace(".", ","), font=police(26), fill=(255, 255, 255),
-           stroke_width=3, stroke_fill=(0, 0, 0))
-    bandeau = Image.new("RGB", (im.width, 46), (20, 24, 32))
-    db = ImageDraw.Draw(bandeau)
-    db.text((12, 10), f"Romanche à Livet — {local:%d/%m/%Y %H:%M} (heure de Paris)", font=police(22),
-            fill=(255, 255, 255))
-    db.text((im.width - 12, 13), "mesure DINOv2, échelle de Simon", font=police(16), fill=(170, 180, 200),
-            anchor="ra")
-    sortie = Image.new("RGB", (im.width, im.height + bandeau.height))
-    sortie.paste(bandeau, (0, 0))
-    sortie.paste(im, (0, bandeau.height))
+    fond = (20, 24, 32)
+    haut = Image.new("RGB", (im.width, 40), fond)
+    ImageDraw.Draw(haut).text((12, 20), f"Romanche à Livet — {quand.astimezone(HEURE_LOCALE):%d/%m/%Y %H:%M}",
+                              font=police(21), fill=(255, 255, 255), anchor="lm")
+    bas = Image.new("RGB", (im.width, 44), fond)
+    db = ImageDraw.Draw(bas)
+    x = 12
+    for m in mesures:
+        db.rectangle([x, 17, x + 22, 23], fill=m["couleur"])
+        texte = f"{m['nom']} : {m['hauteur_m']:.2f} m".replace(".", ",")
+        db.text((x + 30, 22), texte, font=police(19), fill=(255, 255, 255), anchor="lm")
+        x += 30 + db.textlength(texte, font=police(19)) + 34
+    sortie = Image.new("RGB", (im.width, haut.height + im.height + bas.height))
+    sortie.paste(haut, (0, 0))
+    sortie.paste(im, (0, haut.height))
+    sortie.paste(bas, (0, haut.height + im.height))
     return sortie
 
 
@@ -126,31 +133,34 @@ def main():
 
     from PIL import Image
     sys.path.insert(0, str(ROOT / "niveau_eau"))
-    from niveau_eau import mesurer_niveau
+    import niveau_eau as ne
 
     brut = s3.get_object(Bucket=bucket, Key=cle)["Body"].read()
-    photo = Image.open(io.BytesIO(brut))
-    import niveau_eau as ne
-    y = mesurer_niveau(Image.open(io.BytesIO(brut)), methode=3)
-    decalage = ne.decalage_camera(Image.open(io.BytesIO(brut)))
+    ouvrir = lambda: Image.open(io.BytesIO(brut))
+    photo, retrait = ouvrir(), 0
     if photo.size == (1920, 2560):                           # ancien mode portrait : même cadrage que le modèle
-        photo, y = photo.crop((0, 807, 1919, 2560)), y - 807
-        decalage = ne.decalage_camera(photo)
-    metres = ne.en_metres_depuis_px(y - decalage)
+        photo, retrait = photo.convert("RGB").crop((0, 807, 1919, 2560)), 807
+    decalage = ne.decalage_camera(photo if retrait else ouvrir())
+    mesures = []
+    for methode, nom, couleur in MODELES:
+        y = ne.mesurer_niveau(ouvrir(), methode=methode) - retrait
+        mesures.append({"methode": methode, "nom": nom, "couleur": couleur, "niveau_px": y,
+                        "hauteur_m": ne.en_metres_depuis_px(y - decalage)})
+        print(f"  {nom:11s} {mesures[-1]['hauteur_m']:.2f} m  ({y:.1f} px)", flush=True)
     quand = date_prise(cle)
-    dessiner(photo, y, quand, metres, decalage, ne.ECHELLE).save(a.sortie / "niveau_live.jpg", quality=85)
+    dessiner(photo, mesures, quand, decalage, ne.ECHELLE).save(a.sortie / "niveau_live.jpg", quality=85)
 
-    maintenant = datetime.now(timezone.utc)
-    etat = {"cle": cle, "prise_utc": quand.isoformat(), "hauteur_m": metres, "niveau_px": y,
-            "decalage_camera_px": round(decalage, 1), "methode": "DINOv2",
-            "mis_a_jour_utc": maintenant.isoformat(timespec="seconds")}
+    etat = {"cle": cle, "prise_utc": quand.isoformat(), "decalage_camera_px": round(decalage, 1),
+            "mesures": {m["nom"]: {"hauteur_m": m["hauteur_m"], "niveau_px": m["niveau_px"]} for m in mesures},
+            "mis_a_jour_utc": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     etat_f.write_text(json.dumps(etat, indent=1, ensure_ascii=False))
     hist = a.sortie / "historique.csv"
-    if not hist.exists():
-        hist.write_text("prise_utc,hauteur_m,niveau_px,decalage_camera_px,cle\n")
+    entete = "prise_utc,hauteur_dinov2_m,hauteur_sam_affine_m,hauteur_sam_brut_m,decalage_camera_px,cle\n"
+    if not hist.exists() or hist.read_text().splitlines()[0] + "\n" != entete:
+        hist.write_text(entete)                              # nouveau format : on repart de zéro
     with hist.open("a") as f:
-        f.write(f"{quand.isoformat()},{metres},{y},{decalage:.1f},{cle}\n")
-    print(f"hauteur {metres:.2f} m, niveau {y:.1f} px, décalage caméra {decalage:+.1f} px ({quand.astimezone(HEURE_LOCALE):%d/%m %H:%M} à Paris)")
+        f.write(f"{quand.isoformat()},{','.join(str(m['hauteur_m']) for m in mesures)},{decalage:.1f},{cle}\n")
+    print(f"photo du {quand.astimezone(HEURE_LOCALE):%d/%m %H:%M} (Paris), décalage caméra {decalage:+.1f} px")
 
 
 if __name__ == "__main__":

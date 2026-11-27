@@ -8,21 +8,12 @@ Projet de vision pour le niveau de la Romanche.
   <img src="https://raw.githubusercontent.com/MathisBorie/vision_romanche_level/live/niveau_live.jpg" alt="Dernière photo de la caméra et niveau d'eau mesuré" width="720">
 </p>
 
-<p align="center">
-  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml/badge.svg" alt="État de la mise à jour"></a>
-  &nbsp;
-  <a href="https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml"><img src="https://img.shields.io/badge/%E2%86%BB-relancer%20%2F%20r%C3%A9activer-2ea44f" alt="Relancer ou réactiver la mise à jour"></a>
-  &nbsp;
-  <a href="https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv"><img src="https://img.shields.io/badge/historique-CSV-blue" alt="Historique des mesures"></a>
-</p>
+- **trait vert** : DINOv2 (le plus précis, ~6 px d'erreur)
+- **trait bleu** : SAM affiné sur nos photos
+- **trait rouge** : SAM sans entraînement
+- **pointillés blancs** : repères 1,0 / 1,5 / 1,8 m
 
-Dernière photo de la caméra (mise à jour toutes les 15 min, avec 15 à 30 min de retard), avec le niveau
-d'eau mesuré par DINOv2 (ligne bleue), converti en mètres sur l'échelle de Simon (traits 1,0 / 1,5 / 1,8 m).
-Si l'image n'avance plus : bouton **relancer / réactiver**, puis *Enable workflow* (si GitHub a mis la
-tâche en pause) ou *Run workflow* (mise à jour immédiate).
-
-Mesurer le niveau sur n'importe quelle photo : [`niveau_eau/`](niveau_eau/LISEZMOI.md)
-(`mesurer_niveau(image, methode)`, 3 méthodes, poids téléchargés automatiquement).
+Mise à jour toutes les 15 min · [relancer / réactiver](https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml) · [historique](https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv) · [utiliser les modèles](niveau_eau/LISEZMOI.md)
 
 ## Accès aux images (bucket S3)
 
