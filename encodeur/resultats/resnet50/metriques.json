@@ -1,0 +1,47 @@
+{
+  "encodeur": "resnet50",
+  "modele_timm": "resnet50.a1_in1k",
+  "meilleure_epoque": 5,
+  "val": {
+    "n": 841,
+    "erreur_moyenne_px": 7.55,
+    "erreur_mediane_px": 6.9,
+    "erreur_max_px": 39.3,
+    "a_5px_pct": 39.4,
+    "a_10px_pct": 69.8,
+    "a_20px_pct": 98.2
+  },
+  "test": {
+    "n": 883,
+    "erreur_moyenne_px": 6.31,
+    "erreur_mediane_px": 5.3,
+    "erreur_max_px": 23.0,
+    "a_5px_pct": 47.3,
+    "a_10px_pct": 77.9,
+    "a_20px_pct": 99.4
+  },
+  "test_reference_naive": {
+    "n": 883,
+    "erreur_moyenne_px": 47.39,
+    "erreur_mediane_px": 43.43,
+    "erreur_max_px": 197.6,
+    "a_5px_pct": 0.1,
+    "a_10px_pct": 1.2,
+    "a_20px_pct": 8.6
+  },
+  "parametres": {
+    "encodeur": "resnet50",
+    "epoques": 20,
+    "lot": 16,
+    "lr": 0.001,
+    "lr_encodeur": 5e-05,
+    "workers": 8,
+    "limite": 0,
+    "graine": 0,
+    "photos": {
+      "train": 2652,
+      "val": 841,
+      "test": 883
+    }
+  }
+}

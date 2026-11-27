@@ -1,0 +1,5 @@
+POD : base 3494 photos train ; 3493 annotées train+val ; 883 test ; CPU i9-12900K
+  POD : 3494 photos, 750 modes en 20 s
+  POD + linéaire, K = 750      erreur moyenne   13.5 px  médiane  11.8  max    91  biais  -9.1 | entraînement 0.9 min | 17.0 ms/image (CPU 1 cœur)
+  POD + réseau, K = 300        erreur moyenne   11.6 px  médiane  10.4  max   114  biais  -6.4 | entraînement 2.5 min | 17.1 ms/image (CPU 1 cœur)
+  POD + réseau, K = 750        erreur moyenne   10.5 px  médiane   8.8  max   121  biais  -5.4 | entraînement 7.0 min | 17.2 ms/image (CPU 1 cœur)

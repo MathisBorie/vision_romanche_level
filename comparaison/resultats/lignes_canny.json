@@ -1,0 +1,22 @@
+{
+  "cle": "lignes_canny",
+  "categorie": "Lignes de pixels (sans apprentissage)",
+  "methode": "Canny + gradient",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 29.0,
+    "erreur_mediane": 9.0,
+    "erreur_max": 254.0,
+    "biais": -14.13,
+    "a5": 31.0,
+    "a10": 54.5,
+    "a20": 77.5
+  },
+  "sans_prediction": 0,
+  "apprentissage": "aucun",
+  "duree_entrainement_s": null,
+  "machine_entrainement": null,
+  "temps_image_ms": 47.6,
+  "machine_image": "CPU 1 cœur",
+  "duree_totale_test_s": 43.0
+}

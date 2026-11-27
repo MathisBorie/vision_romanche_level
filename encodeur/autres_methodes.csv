@@ -1,0 +1,9 @@
+categorie,methode,erreur_moyenne,erreur_mediane,erreur_max,biais,a5,a10,a20,apprentissage,duree,duree_totale_test_s,machine
+Lignes de pixels (sans apprentissage),Stats RGB,88.4,95.0,250,-79.4,10.3,17.4,27.5,aucun,9 s (CPU Mac),9,CPU Mac
+Lignes de pixels (sans apprentissage),Canny + gradient,29.0,9.0,254,-14.1,31.0,54.5,77.5,aucun,2 s (CPU Mac),2,CPU Mac
+Lignes de pixels (sans apprentissage),Texture (variance locale),20.6,9.0,255,-0.9,32.0,57.8,81.2,aucun,8 s (CPU Mac),8,CPU Mac
+POD,"POD + linéaire, K = 750",13.5,11.8,91,,18.2,42.4,78.1,régression,< 1 min (CPU Mac),,CPU Mac
+POD,"POD + réseau, K = 300",11.7,10.4,102,,24.3,48.2,84.7,~1 090 itér.,~1 min (CPU Mac),,CPU Mac
+POD,"POD + réseau, K = 750",10.6,9.0,125,,27.5,55.0,89.7,~1 170 itér.,~1 min (CPU Mac),,CPU Mac
+SAM 2.1-S (segmentation),SAM zéro-shot,8.9,7.0,574,5.6,42.1,71.1,95.0,aucun,2.4 min (GPU Mac),144,GPU Mac
+SAM 2.1-S (segmentation),"SAM, décodeur affiné",6.5,6.0,28.1,-2.4,43.7,77.3,99.4,3 époques,38 min (GPU Mac),,GPU Mac

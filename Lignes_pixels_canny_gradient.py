@@ -8,14 +8,14 @@ from matplotlib.backends.backend_pdf import PdfPages
 # 1. PARAMÈTRES
 # ==========================================
 
-images = sorted(pathlib.Path("data/raw/romanche-01/2026/11/06").glob("*.jpg"))
+images = sorted(pathlib.Path("data/raw/romanche-01/2026/06/15").glob("*.jpg"))
 
 # Zone verticale de recherche (on garde ta zone)
-Y_MIN_RATIO = 0.30
-Y_MAX_RATIO = 0.65
+Y_MIN_RATIO = 0.35
+Y_MAX_RATIO = 0.55
 
 # Lissage du signal (un peu plus grand pour bien lisser les micro-variations des rochers)
-SMOOTHING = 41
+SMOOTHING = 49
 
 # Paramètres de Canny
 CANNY_LOW = 50
@@ -92,47 +92,48 @@ def detect_waterline(image_path):
 # 3. TRAITEMENT ET CRÉATION DU RAPPORT PDF
 # ==========================================
 
-output_pdf = pathlib.Path("Lignes_pixels_canny_gradient_report.pdf")
+if __name__ == "__main__":
+    output_pdf = pathlib.Path("Lignes_pixels_canny_gradient_report.pdf")
 
-if not images:
-    raise FileNotFoundError("Aucune image trouvée dans data/raw/romanche-01/2026/11/06")
+    if not images:
+        raise FileNotFoundError("Aucune image trouvée dans data/raw/romanche-01/2026/11/06")
 
-with PdfPages(output_pdf) as pdf:
-    for image_path in images:
-        image, result, edges, profile, gradient, waterline, y_min, y_max = detect_waterline(image_path)
+    with PdfPages(output_pdf) as pdf:
+        for image_path in images:
+            image, result, edges, profile, gradient, waterline, y_min, y_max = detect_waterline(image_path)
 
-        print(f"\nImage : {image_path.name}")
-        print(f"Niveau détecté : {waterline} pixels")
-        print(f"Position relative : {waterline/image.shape[0]*100:.2f} %")
+            print(f"\nImage : {image_path.name}")
+            print(f"Niveau détecté : {waterline} pixels")
+            print(f"Position relative : {waterline/image.shape[0]*100:.2f} %")
 
-        # Création d'une figure à 4 panneaux (on ajoute le gradient)
-        fig, axes = plt.subplots(1, 4, figsize=(24, 6), constrained_layout=True)
+            # Création d'une figure à 4 panneaux (on ajoute le gradient)
+            fig, axes = plt.subplots(1, 4, figsize=(24, 6), constrained_layout=True)
 
-        # Panneau 1 : Image avec ligne
-        axes[0].imshow(result)
-        axes[0].set_title(f"{image_path.name} — Ligne (y={waterline})")
-        axes[0].axis("off")
+            # Panneau 1 : Image avec ligne
+            axes[0].imshow(result)
+            axes[0].set_title(f"{image_path.name} — Ligne (y={waterline})")
+            axes[0].axis("off")
 
-        # Panneau 2 : Contours
-        axes[1].imshow(edges, cmap="gray")
-        axes[1].set_title("Contours (Canny)")
-        axes[1].axis("off")
+            # Panneau 2 : Contours
+            axes[1].imshow(edges, cmap="gray")
+            axes[1].set_title("Contours (Canny)")
+            axes[1].axis("off")
 
-        # Panneau 3 : Profil de densité (ce qu'on avait avant)
-        axes[2].plot(profile)
-        axes[2].axvline(waterline, color="red", linestyle="--")
-        axes[2].set_title("Densité de contours par ligne")
-        axes[2].grid()
+            # Panneau 3 : Profil de densité (ce qu'on avait avant)
+            axes[2].plot(profile)
+            axes[2].axvline(waterline, color="red", linestyle="--")
+            axes[2].set_title("Densité de contours par ligne")
+            axes[2].grid()
 
-        # Panneau 4 : Le GRADIENT (la chute de contours = le vrai bord)
-        axes[3].plot(gradient)
-        axes[3].axvline(waterline, color="red", linestyle="--", label="Ligne détectée")
-        axes[3].axvspan(y_min, y_max, alpha=0.1, color="gray", label="Zone de recherche")
-        axes[3].set_title("Gradient (Chute de contours = Bord de l'eau)")
-        axes[3].legend()
-        axes[3].grid()
+            # Panneau 4 : Le GRADIENT (la chute de contours = le vrai bord)
+            axes[3].plot(gradient)
+            axes[3].axvline(waterline, color="red", linestyle="--", label="Ligne détectée")
+            axes[3].axvspan(y_min, y_max, alpha=0.1, color="gray", label="Zone de recherche")
+            axes[3].set_title("Gradient (Chute de contours = Bord de l'eau)")
+            axes[3].legend()
+            axes[3].grid()
 
-        pdf.savefig(fig)
-        plt.close(fig)
+            pdf.savefig(fig)
+            plt.close(fig)
 
-print(f"\nRapport créé : {output_pdf.resolve()}")
+    print(f"\nRapport créé : {output_pdf.resolve()}")

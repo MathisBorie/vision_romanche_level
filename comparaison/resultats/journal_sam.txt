@@ -1,0 +1,5 @@
+CPU i9-12900K | GPU RTX 3080 Ti
+SAM zéro-shot : 883 photos test sur cuda
+[transformers] You are using a model of type `sam2_video` to instantiate a model of type `sam2`. This may be expected if you are loading a checkpoint that shares a subset of the architecture (e.g., loading a `sam2_video` checkpoint into `Sam2Model`), but is otherwise not supported and can yield errors. Please verify that the checkpoint is compatible with the model you are instantiating.
+Loading weights:   0%|          | 0/357 [00:00<?, ?it/s]Loading weights:  37%|███▋      | 132/357 [00:00<00:00, 1317.49it/s]Loading weights: 100%|██████████| 357/357 [00:00<00:00, 1825.56it/s]
+  SAM zéro-shot                erreur moyenne    8.9 px  médiane   7.0  max   574  biais  +5.6 | entraînement — | 112.5 ms/image (RTX 3080 Ti)

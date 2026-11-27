@@ -9,12 +9,12 @@ from matplotlib.backends.backend_pdf import PdfPages
 # 1. PARAMÈTRES
 # ==========================================
 
-images = sorted(pathlib.Path("data/raw/romanche-01/2026/11/06").glob("*.jpg"))
+images = sorted(pathlib.Path("data/raw/romanche-01/2026/06/15").glob("*.jpg"))
 
 
 # Région verticale de recherche
-Y_MIN_RATIO = 0.40
-Y_MAX_RATIO = 0.60
+Y_MIN_RATIO = 0.35
+Y_MAX_RATIO = 0.55
 
 # Lissage du signal statistique
 SMOOTHING = 21
@@ -26,7 +26,7 @@ SMOOTHING = 21
 
 def detect_waterline(image_path):
 
-    image = cv2.imread(image_path)
+    image = cv2.imread(str(image_path))
 
     if image is None:
         raise FileNotFoundError(image_path)
@@ -80,43 +80,44 @@ def detect_waterline(image_path):
 # 3. TRAITEMENT ET CRÉATION DU RAPPORT PDF
 # ==========================================
 
-output_pdf = pathlib.Path("Lignes_pixel2_report.pdf")
+if __name__ == "__main__":
+    output_pdf = pathlib.Path("Lignes_pixel2_report.pdf")
 
-if not images:
-    raise FileNotFoundError("Aucune image trouvée dans data/raw/romanche-01/2026/11/06")
+    if not images:
+        raise FileNotFoundError("Aucune image trouvée dans data/raw/romanche-01/2026/11/06")
 
-with PdfPages(output_pdf) as pdf:
-    for image_path in images:
-        image, result, score, waterline = detect_waterline(image_path)
+    with PdfPages(output_pdf) as pdf:
+        for image_path in images:
+            image, result, score, waterline = detect_waterline(image_path)
 
-        print(f"\nImage : {image_path}")
-        print(f"Niveau détecté : {waterline} pixels")
-        print(f"Position relative : {waterline/image.shape[0]*100:.2f} %")
+            print(f"\nImage : {image_path}")
+            print(f"Niveau détecté : {waterline} pixels")
+            print(f"Position relative : {waterline/image.shape[0]*100:.2f} %")
 
-        fig, axes = plt.subplots(1, 3, figsize=(18, 6), constrained_layout=True)
+            fig, axes = plt.subplots(1, 3, figsize=(18, 6), constrained_layout=True)
 
-        axes[0].imshow(image)
-        axes[0].set_title(f"{image_path.name} — Image originale")
-        axes[0].axis("off")
+            axes[0].imshow(image)
+            axes[0].set_title(f"{image_path.name} — Image originale")
+            axes[0].axis("off")
 
-        axes[1].imshow(result)
-        axes[1].set_title(f"Ligne eau / berge détectée — y={waterline} px")
-        axes[1].axis("off")
+            axes[1].imshow(result)
+            axes[1].set_title(f"Ligne eau / berge détectée — y={waterline} px")
+            axes[1].axis("off")
 
-        axes[2].plot(score)
-        axes[2].axvline(
-            waterline,
-            color="red",
-            linestyle="--",
-            label="Ligne détectée",
-        )
-        axes[2].set_xlabel("Position verticale (pixels)")
-        axes[2].set_ylabel("Score statistique")
-        axes[2].set_title("Variation des statistiques RGB")
-        axes[2].legend()
-        axes[2].grid()
+            axes[2].plot(score)
+            axes[2].axvline(
+                waterline,
+                color="red",
+                linestyle="--",
+                label="Ligne détectée",
+            )
+            axes[2].set_xlabel("Position verticale (pixels)")
+            axes[2].set_ylabel("Score statistique")
+            axes[2].set_title("Variation des statistiques RGB")
+            axes[2].legend()
+            axes[2].grid()
 
-        pdf.savefig(fig)
-        plt.close(fig)
+            pdf.savefig(fig)
+            plt.close(fig)
 
-print(f"\nRapport créé : {output_pdf.resolve()}")
+    print(f"\nRapport créé : {output_pdf.resolve()}")

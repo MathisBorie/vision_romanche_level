@@ -1,0 +1,24 @@
+{
+  "cle": "pod_lineaire_750",
+  "categorie": "POD",
+  "methode": "POD + linéaire, K = 750",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 13.48,
+    "erreur_mediane": 11.8,
+    "erreur_max": 91.1,
+    "biais": -9.08,
+    "a5": 18.2,
+    "a10": 42.5,
+    "a20": 78.4
+  },
+  "sans_prediction": 0,
+  "apprentissage": "régression",
+  "duree_entrainement_s": 53.4,
+  "machine_entrainement": "CPU i9-12900K",
+  "temps_image_ms": 17.0,
+  "machine_image": "CPU 1 cœur",
+  "K": 750,
+  "photos_base_pod": 3494,
+  "photos_annotees_train": 3493
+}
