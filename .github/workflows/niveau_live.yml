@@ -1,7 +1,6 @@
-# Image « en direct » du README : toutes les 15 min, dernière photo du bucket + niveau mesuré par DINOv2.
+# Image « en direct » du README : toutes les 15 min, dernière photo de la caméra (API publique du site de la
+# caméra) + niveau d'eau des 3 modèles.
 # Le résultat est poussé sur la branche `live` (un seul commit, écrasé à chaque fois : l'historique ne grossit pas).
-# Secrets à créer dans Settings > Secrets and variables > Actions :
-#   S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 name: Niveau en direct
 
 on:
@@ -16,12 +15,6 @@ permissions:
 concurrency:
   group: niveau-live
   cancel-in-progress: false
-
-env:
-  S3_BUCKET: ${{ secrets.S3_BUCKET }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   mettre-a-jour:
@@ -41,7 +34,6 @@ jobs:
       - name: Y a-t-il une nouvelle photo ?
         id: verif
         run: |
-          pip install --quiet boto3
           python .github/scripts/niveau_live.py --verifier sortie ${{ github.event_name == 'workflow_dispatch' && '--forcer' || '' }}
 
       - name: Cache des poids
