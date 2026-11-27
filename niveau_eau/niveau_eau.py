@@ -24,7 +24,7 @@ import torch.nn.functional as F
 from PIL import Image, ImageOps
 from torch import nn
 
-__all__ = ["mesurer_niveau", "METHODES"]
+__all__ = ["mesurer_niveau", "en_metres_depuis_px", "decalage_camera", "METHODES", "ECHELLE"]
 
 ICI = Path(__file__).resolve().parent
 POIDS = ICI / "poids"
@@ -59,6 +59,13 @@ TAILLE = (952, 518)                             # (largeur, hauteur), multiples 
 MOYENNE, ECART_TYPE = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
 
 ImageEntree = Union[str, Path, Image.Image, np.ndarray]
+
+#: Échelle de Simon : (niveau en px dans le repère de référence, hauteur en m), de haut en bas de l'image.
+#: Repère de référence = cadrage de la photo 2026-11-03-104512 (decalage_y = 0, voir decalage_camera).
+#: Relevé sur sa capture des photos du 21/11/2026 (affichage y >= 300, échelle 1919/1871, decalage_y ~ 1,5).
+ECHELLE = [(696.5, 1.8), (785.7, 1.5), (846.7, 1.0)]
+REFERENCE_CADRAGE = ICI / "reference_cadrage.png"   # zone fixe (mur, y < 800) de la référence, à 1/4
+S_CADRAGE, FIXE_Y1, LUM_MIN = 4, 800, 20
 _CACHE: dict = {}                               # modèles déjà chargés (un seul chargement par session)
 
 
@@ -66,7 +73,7 @@ _CACHE: dict = {}                               # modèles déjà chargés (un s
 # Point d'entrée
 # --------------------------------------------------------------------------------------------------
 def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
-                   appareil: str | None = None) -> float:
+                   appareil: str | None = None, en_metres: bool = False) -> float:
     """Mesure le niveau d'eau sur une photo de la caméra de la Romanche.
 
     Le niveau est la hauteur (en pixels, comptée depuis le HAUT de l'image) de la frontière entre
@@ -99,9 +106,13 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
 
             (Erreurs mesurées sur 883 photos de 3 semaines jamais vues à l'entraînement.)
         appareil: ``"cuda"``, ``"mps"`` (Mac) ou ``"cpu"``. Par défaut, le plus rapide disponible.
+        en_metres: si ``True``, renvoie la hauteur d'eau en **mètres** sur l'échelle de Simon
+            (traits à 1,0 / 1,5 / 1,8 m, interpolation linéaire par morceaux) au lieu des pixels.
+            Le mouvement de la caméra est corrigé automatiquement (voir :func:`decalage_camera`).
 
     Returns:
-        float: le niveau d'eau, en pixels depuis le haut de l'image fournie.
+        float: le niveau d'eau, en pixels depuis le haut de l'image fournie
+        (ou en mètres si ``en_metres=True`` : plus grand = eau plus haute).
 
     Raises:
         ValueError: si ``methode`` n'est pas 1, 2 ou 3, ou si l'image n'a pas un format reconnu.
@@ -133,7 +144,70 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
         y = _sam_affine(photo, jpeg, _appareil(appareil))
     else:
         y = _dinov2(photo, jpeg, _appareil(appareil))
+    if en_metres:                                            # repère 1919 x 1753, recalé sur la référence
+        return en_metres_depuis_px(float(y) - decalage_camera(image if haut == 0 else photo))
     return round(haut + float(y) * h / H0, 1)                # repère 1919 x 1753 -> repère de l'image
+
+
+def en_metres_depuis_px(niveau_ref_px: float) -> float:
+    """Convertit un niveau en px (repère de référence) en hauteur d'eau en m, sur l'échelle de Simon.
+
+    Linéaire par morceaux entre les traits de :data:`ECHELLE` (1,8 / 1,5 / 1,0 m) ; au-delà des traits
+    extrêmes, on prolonge le segment le plus proche (valeur moins sûre).
+
+    Args:
+        niveau_ref_px: niveau en px dans le repère de référence, c'est-à-dire
+            ``niveau_px - decalage_y`` (``decalage_y`` donné par :func:`decalage_camera`).
+
+    Returns:
+        float: hauteur d'eau en mètres, arrondie au cm.
+    """
+    ys = [p for p, _ in ECHELLE]
+    hs = [m for _, m in ECHELLE]
+    i = 0 if niveau_ref_px < ys[1] else len(ys) - 2           # segment haut ou segment bas
+    for k in range(len(ys) - 1):
+        if ys[k] <= niveau_ref_px <= ys[k + 1]:
+            i = k
+    pente = (hs[i + 1] - hs[i]) / (ys[i + 1] - ys[i])
+    return round(hs[i] + pente * (niveau_ref_px - ys[i]), 2)
+
+
+def decalage_camera(image: ImageEntree, _jpeg: bool | None = None) -> float:
+    """Décalage vertical de la caméra (px) par rapport au cadrage de référence.
+
+    La caméra dérive (~20 px entre juin et novembre) et bouge avec le soleil (~15 px dans la journée).
+    On le mesure comme ``data_treatment/standardisation.py`` : corrélation de phase sur la zone fixe
+    (mur + enrochement, y < 800) à 1/4 de résolution. ``decalage_y > 0`` : la scène est plus bas que
+    sur la référence. Renvoie 0 si l'image est trop sombre pour s'aligner (nuit).
+
+    Args:
+        image: la photo (mêmes formats que :func:`mesurer_niveau`).
+
+    Returns:
+        float: ``decalage_y`` en px de la photo d'origine.
+    """
+    import cv2
+    if _jpeg is None:
+        image, _jpeg = _ouvrir(image)
+    im = image
+    if _jpeg:
+        im.draft("RGB", (W0 // S_CADRAGE, H0 // S_CADRAGE))
+        im = im.convert("RGB")
+    if im.size != (480, 439):
+        im = _complete(im).resize((480, 439), Image.BOX)
+    gris = cv2.cvtColor(np.asarray(im.convert("RGB")), cv2.COLOR_RGB2GRAY).astype(np.float32)
+    s = W0 / gris.shape[1]
+    bande = gris[round(500 / s): round(1200 / s)]
+    if bande.mean() < LUM_MIN:
+        return 0.0
+
+    def zone(g):
+        z = g - cv2.GaussianBlur(g, (0, 0), 8)
+        return z * cv2.createHanningWindow(z.shape[::-1], cv2.CV_32F)
+
+    ref = np.asarray(Image.open(REFERENCE_CADRAGE), dtype=np.float32)
+    (_, dy), _ = cv2.phaseCorrelate(zone(ref), zone(gris[: round(FIXE_Y1 / s)]))
+    return float(dy * s)
 
 
 # --------------------------------------------------------------------------------------------------

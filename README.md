@@ -17,7 +17,7 @@ Projet de vision pour le niveau de la Romanche.
 </p>
 
 Dernière photo de la caméra (mise à jour toutes les 15 min, avec 15 à 30 min de retard), avec le niveau
-d'eau mesuré par DINOv2 (ligne rouge, en pixels depuis le haut de l'image : plus petit = eau plus haute).
+d'eau mesuré par DINOv2 (ligne bleue), converti en mètres sur l'échelle de Simon (traits 1,0 / 1,5 / 1,8 m).
 Si l'image n'avance plus : bouton **relancer / réactiver**, puis *Enable workflow* (si GitHub a mis la
 tâche en pause) ou *Run workflow* (mise à jour immédiate).
 

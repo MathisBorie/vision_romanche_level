@@ -36,4 +36,4 @@ exports/
 !.env.example
 
 # Poids des modèles (téléchargés depuis la Release GitHub)
-niveau_eau/poids/
+niveau_eau/poids
