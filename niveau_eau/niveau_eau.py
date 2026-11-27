@@ -60,9 +60,9 @@ MOYENNE, ECART_TYPE = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
 
 ImageEntree = Union[str, Path, Image.Image, np.ndarray]
 
-#: Échelle de Simon : (niveau en px dans le repère de référence, hauteur en m), de haut en bas de l'image.
+#: Échelle en mètres : (niveau en px dans le repère de référence, hauteur en m), de haut en bas de l'image.
 #: Repère de référence = cadrage de la photo 2026-11-03-104512 (decalage_y = 0, voir decalage_camera).
-#: Relevé sur sa capture des photos du 21/11/2026 (affichage y >= 300, échelle 1919/1871, decalage_y ~ 1,5).
+#: Relevé sur une capture des photos du 21/11/2026 (affichage y >= 300, échelle 1919/1871, decalage_y ~ 1,5).
 ECHELLE = [(696.5, 1.8), (785.7, 1.5), (846.7, 1.0)]
 REFERENCE_CADRAGE = ICI / "reference_cadrage.png"   # zone fixe (mur, y < 800) de la référence, à 1/4
 S_CADRAGE, FIXE_Y1, LUM_MIN = 4, 800, 20
@@ -106,8 +106,8 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
 
             (Erreurs mesurées sur 883 photos de 3 semaines jamais vues à l'entraînement.)
         appareil: ``"cuda"``, ``"mps"`` (Mac) ou ``"cpu"``. Par défaut, le plus rapide disponible.
-        en_metres: si ``True``, renvoie la hauteur d'eau en **mètres** sur l'échelle de Simon
-            (traits à 1,0 / 1,5 / 1,8 m, interpolation linéaire par morceaux) au lieu des pixels.
+        en_metres: si ``True``, renvoie la hauteur d'eau en **mètres** au lieu des pixels
+            (repères à 1,0 / 1,5 / 1,8 m, interpolation linéaire par morceaux).
             Le mouvement de la caméra est corrigé automatiquement (voir :func:`decalage_camera`).
 
     Returns:
@@ -150,7 +150,7 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
 
 
 def en_metres_depuis_px(niveau_ref_px: float) -> float:
-    """Convertit un niveau en px (repère de référence) en hauteur d'eau en m, sur l'échelle de Simon.
+    """Convertit un niveau en px (repère de référence) en hauteur d'eau en m, sur l'échelle de référence.
 
     Linéaire par morceaux entre les traits de :data:`ECHELLE` (1,8 / 1,5 / 1,0 m) ; au-delà des traits
     extrêmes, on prolonge le segment le plus proche (valeur moins sûre).
