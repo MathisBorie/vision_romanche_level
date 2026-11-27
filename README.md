@@ -22,7 +22,7 @@ Trois modèles sont disponibles, avec leurs poids, dans [`niveau_eau/`](niveau_e
 
 ```python
 from niveau_eau import mesurer_niveau
-mesurer_niveau("photo.jpg", methode=3, en_metres=True)   # 1 = SAM brut, 2 = SAM affiné, 3 = DINOv2
+mesurer_niveau("photo.jpg", methode=3)   # 1 SAM brut, 2 SAM affiné, 3 DINOv2
 ```
 
 On en garde trois parce qu'ils ne vieilliront pas pareil. DINOv2 et SAM affiné ont appris sur nos photos :
