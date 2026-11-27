@@ -1,0 +1,23 @@
+{
+  "cle": "encodeur_dinov2",
+  "categorie": "Encodeurs pré-entraînés",
+  "methode": "DINOv2 ViT-S (gelé)",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 5.89,
+    "erreur_mediane": 5.2,
+    "erreur_max": 23.2,
+    "biais": -0.73,
+    "a5": 48.9,
+    "a10": 82.7,
+    "a20": 99.9
+  },
+  "sans_prediction": 0,
+  "apprentissage": "6 époques",
+  "duree_entrainement_s": 558.0,
+  "machine_entrainement": "RTX 3080 Ti",
+  "temps_image_ms": 33.8,
+  "machine_image": "RTX 3080 Ti",
+  "temps_preparation_ms": 18.5,
+  "temps_reseau_ms": 15.3
+}

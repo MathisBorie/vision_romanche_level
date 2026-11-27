@@ -1,0 +1,37 @@
+{
+  "modele": "facebook/sam2.1-hiera-small",
+  "entraine": "mask_decoder",
+  "meilleure_epoque": 1,
+  "val": {
+    "epoque": 1,
+    "perte": 6.6645909204382345,
+    "val_n": 841,
+    "val_erreur_moyenne_px": 8.17,
+    "val_erreur_mediane_px": 7.1,
+    "val_erreur_max_px": 28.6,
+    "val_a_5px_pct": 31.7,
+    "val_a_10px_pct": 68.5,
+    "val_a_20px_pct": 96.4,
+    "val_biais_moyen_px": -3.12
+  },
+  "test": {
+    "n": 883,
+    "erreur_moyenne_px": 6.49,
+    "erreur_mediane_px": 6.0,
+    "erreur_max_px": 27.6,
+    "a_5px_pct": 44.3,
+    "a_10px_pct": 77.9,
+    "a_20px_pct": 99.4,
+    "biais_moyen_px": -2.46
+  },
+  "duree_min": 12.5,
+  "device": "cuda",
+  "parametres": {
+    "epoques": 4,
+    "lot": 4,
+    "lr": 5e-05,
+    "workers": 6,
+    "limite": 0,
+    "graine": 0
+  }
+}

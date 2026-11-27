@@ -1,0 +1,13 @@
+categorie,methode,erreur_moyenne,erreur_mediane,erreur_max,biais,a5,a10,a20,apprentissage,duree,temps_image,temps_image_ms
+Lignes de pixels (sans apprentissage),Stats RGB,88.4,95.0,250.0,-79.4,10.3,17.4,27.5,aucun,9 s (CPU Mac),≈ 10 ms (CPU Mac)*,10.192525481313703
+Lignes de pixels (sans apprentissage),Canny + gradient,29.0,9.0,254.0,-14.1,31.0,54.5,77.5,aucun,2 s (CPU Mac),≈ 2 ms (CPU Mac)*,2.2650056625141564
+Lignes de pixels (sans apprentissage),Texture (variance locale),20.6,9.0,255.0,-0.9,32.0,57.8,81.2,aucun,8 s (CPU Mac),≈ 9 ms (CPU Mac)*,9.060022650056625
+POD,"POD + linéaire, K = 750",13.5,11.8,91.0,,18.2,42.4,78.1,régression,< 1 min (CPU Mac),—,
+POD,"POD + réseau, K = 300",11.7,10.4,102.0,,24.3,48.2,84.7,~1 090 itér.,~1 min (CPU Mac),—,
+POD,"POD + réseau, K = 750",10.6,9.0,125.0,,27.5,55.0,89.7,~1 170 itér.,~1 min (CPU Mac),—,
+SAM 2.1-S (segmentation),SAM zéro-shot,8.9,7.0,574.0,5.6,42.1,71.1,95.0,aucun,2.4 min (GPU Mac),≈ 163 ms (GPU Mac)*,163.08040770101925
+SAM 2.1-S (segmentation),"SAM, décodeur affiné",6.5,6.0,28.1,-2.4,43.7,77.3,99.4,3 époques,38 min (GPU Mac),—,
+Encodeurs pré-entraînés,ResNet-50 (affiné),6.31,5.3,23.0,0.8,47.3,77.9,99.4,5 époques,12 min (RTX 3080 Ti),30 ms GPU / 306 ms CPU,30.2
+Encodeurs pré-entraînés,ConvNeXt-Tiny (affiné),6.49,5.9,25.1,-2.0,43.4,76.9,99.9,2 époques,12 min (RTX 3080 Ti),31 ms GPU / 308 ms CPU,30.8
+Encodeurs pré-entraînés,DINOv2 ViT-S (gelé),5.97,5.3,23.3,-1.0,48.5,80.3,99.9,6 époques,9 min (RTX 3080 Ti),32 ms GPU / 616 ms CPU,32.0
+Référence,Niveau moyen de train,47.39,,,,,,,—,—,—,

@@ -1,0 +1,47 @@
+{
+  "encodeur": "dinov2",
+  "modele_timm": "vit_small_patch14_dinov2.lvd142m",
+  "meilleure_epoque": 6,
+  "val": {
+    "n": 841,
+    "erreur_moyenne_px": 7.96,
+    "erreur_mediane_px": 7.1,
+    "erreur_max_px": 35.3,
+    "a_5px_pct": 37.5,
+    "a_10px_pct": 64.8,
+    "a_20px_pct": 97.6
+  },
+  "test": {
+    "n": 883,
+    "erreur_moyenne_px": 5.89,
+    "erreur_mediane_px": 5.2,
+    "erreur_max_px": 23.2,
+    "a_5px_pct": 48.9,
+    "a_10px_pct": 82.7,
+    "a_20px_pct": 99.9
+  },
+  "test_reference_naive": {
+    "n": 883,
+    "erreur_moyenne_px": 47.39,
+    "erreur_mediane_px": 43.43,
+    "erreur_max_px": 197.6,
+    "a_5px_pct": 0.1,
+    "a_10px_pct": 1.2,
+    "a_20px_pct": 8.6
+  },
+  "parametres": {
+    "encodeur": "dinov2",
+    "epoques": 20,
+    "lot": 16,
+    "lr": 0.001,
+    "lr_encodeur": 5e-05,
+    "workers": 8,
+    "limite": 0,
+    "graine": 0,
+    "photos": {
+      "train": 2652,
+      "val": 841,
+      "test": 883
+    }
+  }
+}

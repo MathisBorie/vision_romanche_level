@@ -1,0 +1,4 @@
+Lignes de pixels : 883 photos test, CPU i9-12900K
+  Stats RGB                    erreur moyenne   88.4 px  médiane  95.0  max   250  biais -79.4 | entraînement — | 218.9 ms/image (CPU 1 cœur)
+  Canny + gradient             erreur moyenne   29.0 px  médiane   9.0  max   254  biais -14.1 | entraînement — | 47.6 ms/image (CPU 1 cœur)
+  Texture (variance locale)    erreur moyenne   20.6 px  médiane   9.0  max   255  biais  -0.9 | entraînement — | 125.9 ms/image (CPU 1 cœur)

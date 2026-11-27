@@ -1,0 +1,22 @@
+{
+  "cle": "sam_zero_shot",
+  "categorie": "SAM 2.1-S (segmentation)",
+  "methode": "SAM zéro-shot",
+  "test": {
+    "n": 883,
+    "erreur_moyenne": 8.86,
+    "erreur_mediane": 7.0,
+    "erreur_max": 574.0,
+    "biais": 5.56,
+    "a5": 42.2,
+    "a10": 71.1,
+    "a20": 94.9
+  },
+  "sans_prediction": 0,
+  "apprentissage": "aucun",
+  "duree_entrainement_s": null,
+  "machine_entrainement": null,
+  "temps_image_ms": 112.5,
+  "machine_image": "RTX 3080 Ti",
+  "duree_totale_test_s": 99.7
+}

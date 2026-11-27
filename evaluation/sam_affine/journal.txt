@@ -1,0 +1,41 @@
+{'train': 2652, 'val': 841, 'test': 883}
+facebook/sam2.1-hiera-small sur mps ; décodeur entraîné : 4.2 M paramètres
+époque 0 (sans entraînement)  val 40.78 px  biais -35.30
+  époque 1  lot 100/663  perte 10.76
+  époque 1  lot 200/663  perte 6.71
+  époque 1  lot 300/663  perte 6.72
+  époque 1  lot 400/663  perte 5.97
+  époque 1  lot 500/663  perte 5.52
+  époque 1  lot 600/663  perte 5.44
+époque 1  perte 6.70  val 8.56 px  médiane 7.50  biais -4.45  (11 min)
+  époque 2  lot 100/663  perte 4.94
+  époque 2  lot 200/663  perte 5.17
+  époque 2  lot 300/663  perte 5.46
+  époque 2  lot 400/663  perte 5.22
+  époque 2  lot 500/663  perte 5.51
+  époque 2  lot 600/663  perte 5.07
+époque 2  perte 5.22  val 8.01 px  médiane 7.20  biais -3.08  (20 min)
+  époque 3  lot 100/663  perte 4.94
+  époque 3  lot 200/663  perte 4.95
+  époque 3  lot 300/663  perte 5.12
+  époque 3  lot 400/663  perte 4.62
+  époque 3  lot 500/663  perte 4.66
+  époque 3  lot 600/663  perte 4.79
+époque 3  perte 4.84  val 8.00 px  médiane 7.10  biais -3.06  (29 min)
+  époque 4  lot 100/663  perte 4.85
+  époque 4  lot 200/663  perte 4.54
+  époque 4  lot 300/663  perte 4.44
+  époque 4  lot 400/663  perte 4.80
+  époque 4  lot 500/663  perte 4.88
+  époque 4  lot 600/663  perte 4.70
+époque 4  perte 4.69  val 8.29 px  médiane 7.30  biais -3.85  (38 min)
+
+meilleure époque 3 ; test :
+  n                    883
+  erreur_moyenne_px    6.52
+  erreur_mediane_px    6.0
+  erreur_max_px        28.1
+  a_5px_pct            43.7
+  a_10px_pct           77.3
+  a_20px_pct           99.4
+  biais_moyen_px       -2.43
