@@ -1,0 +1,20 @@
+{
+ "cle": "447a21a6cdda3128a5a14fd7efa2e47bb4b1c6a21cf4399ba62769a6125e7799.jpg",
+ "prise_utc": "2026-11-28T11:30:05.980301+00:00",
+ "decalage_camera_px": 0.2,
+ "mesures": {
+  "DINOv2": {
+   "hauteur_m": 0.92,
+   "niveau_px": 856.9
+  },
+  "SAM affiné": {
+   "hauteur_m": 0.93,
+   "niveau_px": 855.7
+  },
+  "SAM brut": {
+   "hauteur_m": 0.87,
+   "niveau_px": 863.0
+  }
+ },
+ "mis_a_jour_utc": "2026-11-28T11:31:56+00:00"
+}
