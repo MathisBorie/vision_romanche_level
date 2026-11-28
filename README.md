@@ -17,7 +17,7 @@ Mesurer le niveau de la Romanche à Livet (Isère) à partir des photos d'une ca
 - **trait rouge** : SAM sans entraînement
 - **pointillés blancs** : repères 1,0 / 1,5 / 1,8 m
 
-Mise à jour toutes les 15 min · [relancer / réactiver](https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml) · [historique](https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv)
+Mise à jour automatique · [relancer / réactiver](https://github.com/MathisBorie/vision_romanche_level/actions/workflows/niveau_live.yml) · [historique](https://github.com/MathisBorie/vision_romanche_level/blob/live/historique.csv)
 
 ## Trois modèles disponibles
 
