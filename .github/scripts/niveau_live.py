@@ -41,7 +41,6 @@ def telecharger(chemin: str) -> bytes:
 
 
 JOURS = 5                                       # fenêtre du graphe et du rattrapage
-LUMINOSITE_MIN = 60                             # photo de nuit (moyenne < 60 / 255) : pas de mesure
 ENTETE = "prise_utc,hauteur_dinov2_m,hauteur_sam_affine_m,hauteur_sam_brut_m,decalage_camera_px,cle"
 
 
@@ -138,8 +137,7 @@ def mesurer(brut: bytes):
     photo, retrait = ouvrir(), 0
     if photo.size == (1920, 2560):                           # ancien mode portrait : même cadrage que le modèle
         photo, retrait = photo.convert("RGB").crop((0, 807, 1919, 2560)), 807
-    from PIL import ImageStat
-    if ImageStat.Stat(photo.convert("L")).mean[0] < LUMINOSITE_MIN:   # nuit : les modèles répondent n'importe quoi
+    if ne.trop_sombre(photo):                                # nuit : les modèles répondent n'importe quoi
         return photo, [{"methode": me, "nom": n, "couleur": c, "niveau_px": None, "hauteur_m": None}
                        for me, n, c in MODELES], None
     decalage = ne.decalage_camera(photo if retrait else ouvrir())

@@ -21,10 +21,10 @@ from typing import Literal, Union
 import numpy as np
 import torch
 import torch.nn.functional as F
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageStat
 from torch import nn
 
-__all__ = ["mesurer_niveau", "en_metres_depuis_px", "decalage_camera", "METHODES", "ECHELLE"]
+__all__ = ["mesurer_niveau", "en_metres_depuis_px", "decalage_camera", "trop_sombre", "METHODES", "ECHELLE"]
 
 ICI = Path(__file__).resolve().parent
 POIDS = ICI / "poids"
@@ -66,6 +66,7 @@ ImageEntree = Union[str, Path, Image.Image, np.ndarray]
 ECHELLE = [(696.5, 1.8), (785.7, 1.5), (846.7, 1.0)]
 REFERENCE_CADRAGE = ICI / "reference_cadrage.png"   # zone fixe (mur, y < 800) de la référence, à 1/4
 S_CADRAGE, FIXE_Y1, LUM_MIN = 4, 800, 20
+LUMINOSITE_MIN = 60                             # photo de nuit : luminosité moyenne < 60 / 255 -> pas de mesure
 _CACHE: dict = {}                               # modèles déjà chargés (un seul chargement par session)
 
 
@@ -98,7 +99,7 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
 
             - ``1`` : **SAM 2.1 sans entraînement** (zéro-shot). SAM segmente l'eau à partir de
               points fixes ; le niveau est le bord supérieur de l'eau (médiane sur la largeur).
-              Test : 8,9 px d'erreur moyenne, mais peut se tromper lourdement la nuit (> 100 px).
+              Test : 8,9 px d'erreur moyenne, mais se trompe parfois lourdement (574 px au pire).
             - ``2`` : **SAM 2.1, décodeur affiné** sur nos photos annotées.
               Test : 6,5 px d'erreur moyenne, 28 px au pire.
             - ``3`` : **DINOv2** (encodeur gelé + petite tête entraînée). La plus précise.
@@ -113,6 +114,8 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
     Returns:
         float: le niveau d'eau, en pixels depuis le haut de l'image fournie
         (ou en mètres si ``en_metres=True`` : plus grand = eau plus haute).
+        ``nan`` si la photo est prise de nuit (trop sombre, voir :func:`trop_sombre`) : les modèles
+        n'ont vu que des photos de jour et donneraient n'importe quoi (jusqu'à 4 m).
 
     Raises:
         ValueError: si ``methode`` n'est pas 1, 2 ou 3, ou si l'image n'a pas un format reconnu.
@@ -133,6 +136,8 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
     """
     if methode not in METHODES:
         raise ValueError(f"methode doit être 1, 2 ou 3 (reçu {methode!r}) : {METHODES}")
+    if trop_sombre(image):
+        return float("nan")
     photo, jpeg = _ouvrir(image)
     haut = 0
     if photo.size == PORTRAIT:                               # mode portrait : même vue, plus haute
@@ -147,6 +152,18 @@ def mesurer_niveau(image: ImageEntree, methode: Literal[1, 2, 3] = 3,
     if en_metres:                                            # repère 1919 x 1753, recalé sur la référence
         return en_metres_depuis_px(float(y) - decalage_camera(image if haut == 0 else photo))
     return round(haut + float(y) * h / H0, 1)                # repère 1919 x 1753 -> repère de l'image
+
+
+def trop_sombre(image: ImageEntree) -> bool:
+    """``True`` si la photo est prise de nuit (luminosité moyenne < 60 sur 255).
+
+    En journée les photos sont vers 130-160 ; la première photo du matin en hiver est vers 3.
+    :func:`mesurer_niveau` renvoie ``nan`` pour ces photos.
+    """
+    photo, jpeg = _ouvrir(image)                              # copie à part : ne décode pas l'image du modèle
+    if jpeg:
+        photo.draft("L", (photo.width // 8, photo.height // 8))
+    return ImageStat.Stat(photo.convert("L")).mean[0] < LUMINOSITE_MIN
 
 
 def en_metres_depuis_px(niveau_ref_px: float) -> float:

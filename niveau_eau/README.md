@@ -10,13 +10,15 @@ mesurer_niveau("photo.jpg", en_metres=True)    # hauteur d'eau en m
 mesurer_niveau("photo.jpg", methode=1)         # 1 = SAM brut, 2 = SAM affiné, 3 = DINOv2
 ```
 
-Installation :
+Installation : **[télécharger le dossier](https://github.com/MathisBorie/vision_romanche_level/releases/download/modeles-v1/niveau_eau.zip)**, le dézipper, puis
 
 ```bash
-git clone https://github.com/MathisBorie/vision_romanche_level.git    # ou Code → Download ZIP
-cd vision_romanche_level/niveau_eau
+cd niveau_eau
 pip install -r requirements.txt
 ```
+
+[`exemple.ipynb`](exemple.ipynb) : récupérer les photos avec l'API, mesurer le niveau, puis les 3 modèles
+sur les 5 derniers jours (le graphe de la page d'accueil). Une photo de nuit donne `nan`.
 
 Les poids (250 Mo) se téléchargent tout seuls au premier appel depuis la
 [Release](https://github.com/MathisBorie/vision_romanche_level/releases/tag/modeles-v1).

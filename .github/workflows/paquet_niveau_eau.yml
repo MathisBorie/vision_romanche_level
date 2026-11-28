@@ -1,0 +1,24 @@
+# Dossier niveau_eau/ en zip (code + notebook d'exemple), mis à jour dans la Release à chaque modification.
+# Lien fixe : https://github.com/MathisBorie/vision_romanche_level/releases/download/modeles-v1/niveau_eau.zip
+name: Paquet niveau_eau
+
+on:
+  push:
+    branches: [main]
+    paths: ["niveau_eau/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zipper niveau_eau/ (sans les poids, téléchargés au premier appel)
+        run: zip -qr niveau_eau.zip niveau_eau -x "niveau_eau/poids*" "*/__pycache__/*"
+      - name: Mettre le zip dans la Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload modeles-v1 niveau_eau.zip --clobber
