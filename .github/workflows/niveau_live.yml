@@ -1,5 +1,5 @@
 # Image « en direct » du README : toutes les 15 min, dernière photo de la caméra (API publique du site de la
-# caméra) + niveau d'eau des 3 modèles.
+# caméra) + niveau d'eau des 3 modèles + graphe des 5 derniers jours.
 # Le résultat est poussé sur la branche `live` (un seul commit, écrasé à chaque fois : l'historique ne grossit pas).
 name: Niveau en direct
 
@@ -47,7 +47,7 @@ jobs:
         if: steps.verif.outputs.nouvelle == 'true'
         run: |
           pip install --quiet torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install --quiet timm transformers pandas pillow numpy opencv-python-headless
+          pip install --quiet timm transformers pandas pillow numpy opencv-python-headless matplotlib
 
       - name: Mesurer et dessiner
         if: steps.verif.outputs.nouvelle == 'true'
@@ -56,7 +56,7 @@ jobs:
       - name: Publier sur la branche live
         if: steps.verif.outputs.nouvelle == 'true'
         run: |
-          mkdir -p publication && cp sortie/niveau_live.jpg sortie/niveau_live.json sortie/historique.csv publication/
+          mkdir -p publication && cp sortie/niveau_live.jpg sortie/niveau_live.json sortie/historique.csv sortie/niveau_5j.png publication/
           cd publication
           git init -q -b live
           git config user.name "github-actions[bot]"

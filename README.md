@@ -5,6 +5,10 @@ Mesurer le niveau de la Romanche à Livet (Isère) à partir des photos d'une ca
 ## En direct
 
 <p align="center">
+  <img src="https://raw.githubusercontent.com/MathisBorie/vision_romanche_level/live/niveau_5j.png" alt="Hauteur d'eau mesurée par les 3 modèles sur les 5 derniers jours" width="720">
+</p>
+
+<p align="center">
   <img src="https://raw.githubusercontent.com/MathisBorie/vision_romanche_level/live/niveau_live.jpg" alt="Dernière photo de la caméra et niveau d'eau mesuré" width="720">
 </p>
 
