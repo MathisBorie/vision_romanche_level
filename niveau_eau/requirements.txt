@@ -6,3 +6,4 @@ pillow
 numpy
 pandas
 opencv-python        # méthode 1 et en_metres=True (correction du mouvement de la caméra)
+matplotlib           # notebook d'exemple
