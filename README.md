@@ -21,7 +21,9 @@ Mise à jour toutes les 15 min · [relancer / réactiver](https://github.com/Mat
 
 ## Trois modèles disponibles
 
-Trois modèles sont disponibles, avec leurs poids, dans [`niveau_eau/`](niveau_eau/) :
+Trois modèles sont disponibles, avec leurs poids, dans [`niveau_eau/`](niveau_eau/).
+**[Télécharger le dossier](https://github.com/MathisBorie/vision_romanche_level/releases/download/modeles-v1/niveau_eau.zip)** : la fonction et un [notebook d'exemple](niveau_eau/exemple.ipynb)
+(photos de l'API, mesure, graphe des 5 derniers jours).
 
 ```python
 from niveau_eau import mesurer_niveau
